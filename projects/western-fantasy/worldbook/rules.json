@@ -1,0 +1,526 @@
+{
+    "rules": {
+        "power_system": {
+            "name": "源素之力（Essence）体系",
+            "description": "世界万物皆由'源素'构成。能够感知并驾驭源素的人被称为'驭素者'（Essentist）。这种力量既非传统魔法，也非单纯的武技，而是介于两者之间的独特能力。",
+            "core_concepts": {
+                "essence": {
+                    "name": "源素（Essence）",
+                    "description": "构成万物的基础能量，存在于空气、大地、水、火、生命之中。不同于魔力需要咒语引导，源素更接近于自然之力的直接运用。",
+                    "properties": [
+                        "无处不在，但密度各处不同",
+                        "可被感知、吸收、凝聚、外放",
+                        "与元素有亲和性但不等同于元素魔法",
+                        "更强调'意志'而非'咒文'"
+                    ]
+                },
+                "affinity": {
+                    "name": "亲和（Affinity）",
+                    "description": "每个驭素者对源素的感知方式不同，形成不同的亲和倾向。",
+                    "types": [
+                        {
+                            "name": "力量亲和",
+                            "effect": "强化肉体、增强力量",
+                            "common": true
+                        },
+                        {
+                            "name": "感知亲和",
+                            "effect": "增强感官、预判能力",
+                            "common": true
+                        },
+                        {
+                            "name": "元素倾向",
+                            "effect": "对特定元素有更强控制",
+                            "common": false
+                        },
+                        {
+                            "name": "生命亲和",
+                            "effect": "恢复、强化生命力",
+                            "common": false
+                        }
+                    ]
+                }
+            },
+            "realms": [
+                {
+                    "level": 1,
+                    "name": "感知者（Sensor）",
+                    "description": "刚刚能够感知到源素的存在，开始学习与其产生共鸣。",
+                    "abilities": [
+                        "感知周围源素流动",
+                        "体质略微增强（约1.3倍）",
+                        "直觉敏锐化",
+                        "简单的源素引导（强化攻击）"
+                    ],
+                    "visual_effect": "无明显外在表现",
+                    "population_ratio": "约15%的人有潜力，但只有5%会觉醒",
+                    "typical_roles": [
+                        "普通士兵上限",
+                        "民间猎人",
+                        "基层护卫"
+                    ],
+                    "breakthrough_requirements": {
+                        "talent": "基础资质",
+                        "method": "冥想引导法或意外觉醒",
+                        "time": "数月到数年不等"
+                    }
+                },
+                {
+                    "level": 2,
+                    "name": "凝聚者（Condenser）",
+                    "description": "能够将源素凝聚于体内，形成稳定的内循环。如同容器盛水，体内已有源素储备。",
+                    "abilities": [
+                        "体质增强（约2-3倍）",
+                        "可将源素凝聚于武器，增强攻击",
+                        "形成薄弱的源素护体",
+                        "耐力和恢复力大增"
+                    ],
+                    "visual_effect": "全力战斗时武器/拳头有微弱光晕",
+                    "population_ratio": "约3%",
+                    "typical_roles": [
+                        "精锐士兵",
+                        "小队长",
+                        "职业猎人"
+                    ],
+                    "breakthrough_requirements": {
+                        "resources": "源素辅助材料",
+                        "training": "系统训练或实战磨练",
+                        "time": "3-5年"
+                    }
+                },
+                {
+                    "level": 3,
+                    "name": "外显者（Manifester）",
+                    "description": "能够将源素外放，在体外形成可见的效果。这是真正意义上的'异能者'，开始展现超凡力量。",
+                    "abilities": [
+                        "体质增强（约5倍）",
+                        "源素外放攻击（刃气、冲击波等）",
+                        "坚固的源素护盾",
+                        "可影响小范围环境",
+                        "初步展现亲和能力"
+                    ],
+                    "visual_effect": "攻击时有明显的能量波动，可形成可见的护盾或刀光",
+                    "population_ratio": "约0.5%",
+                    "typical_roles": [
+                        "骑士团核心",
+                        "领主",
+                        "佣兵团长"
+                    ],
+                    "breakthrough_requirements": {
+                        "resources": "稀有源素材料",
+                        "enlightenment": "对自身亲和的深刻理解",
+                        "combat": "生死战斗中的领悟",
+                        "time": "5-10年"
+                    }
+                },
+                {
+                    "level": 4,
+                    "name": "领域者（Dominator）",
+                    "description": "能够在一定范围内释放源素形成'领域'，在领域中对敌人形成压制。战略级强者的门槛。",
+                    "abilities": [
+                        "体质增强（约8倍）",
+                        "释放领域（半径10-20米）",
+                        "在领域内对低阶驭素者形成干扰",
+                        "源素攻击威力大增",
+                        "成熟的亲和能力运用"
+                    ],
+                    "visual_effect": "释放领域时周围空气微微扭曲",
+                    "population_ratio": "约0.05%",
+                    "typical_roles": [
+                        "伯爵级贵族",
+                        "军团核心战力",
+                        "宗师级强者"
+                    ],
+                    "breakthrough_requirements": {
+                        "resources": "稀有的天材地宝",
+                        "understanding": "对源素本质的深刻理解",
+                        "opportunity": "生死之间的机缘",
+                        "time": "10-20年"
+                    }
+                },
+                {
+                    "level": 5,
+                    "name": "大师（Grandmaster）",
+                    "description": "源素运用已臻化境，可同时维持多个复杂的源素技能，战场上的决定性力量。",
+                    "abilities": [
+                        "体质增强（约12倍）",
+                        "大范围领域（半径30-50米）",
+                        "可同时释放多种源素技能",
+                        "源素储备充沛，持久作战能力强",
+                        "独特的个人绝技"
+                    ],
+                    "visual_effect": "战斗时周身有明显的源素流动",
+                    "population_ratio": "一国仅十数人",
+                    "typical_roles": [
+                        "公爵级存在",
+                        "王国支柱",
+                        "传奇级强者"
+                    ],
+                    "breakthrough_requirements": {
+                        "requirements": "顶级资源和机缘，需要数十年积累"
+                    }
+                },
+                {
+                    "level": 6,
+                    "name": "圣阶（Saint）",
+                    "description": "传说中的巅峰存在，源素与身体完美融合，拥有超越常人想象的战斗力。一己之力可扭转战局。",
+                    "abilities": [
+                        "体质增强（约15倍以上）",
+                        "超大范围的领域影响",
+                        "源素攻击可造成大规模破坏",
+                        "极强的恢复力和持久力",
+                        "寿命有所延长"
+                    ],
+                    "visual_effect": "存在本身带有压迫感",
+                    "population_ratio": "大陆仅数十人",
+                    "typical_roles": [
+                        "王国守护者",
+                        "帝国支柱",
+                        "传奇人物"
+                    ],
+                    "breakthrough_requirements": {
+                        "requirements": "极为罕见的机缘，可能穷其一生无法达到"
+                    }
+                }
+            ],
+            "professions": {
+                "description": "驭素者根据战斗风格和源素运用方式的不同，形成了几种主要职业分类。同境界下各职业战力相当，只是擅长领域不同。",
+                "note": "职业只是风格倾向，并非严格限制。许多驭素者会融合多种风格。",
+                "types": [
+                    {
+                        "name": "战士（Warrior）",
+                        "description": "以近战为主，将源素集中于强化身体和武器。最常见的驭素者类型。",
+                        "style": "正面交锋，攻防兼备",
+                        "typical_weapons": [
+                            "剑",
+                            "斧",
+                            "锤",
+                            "盾"
+                        ],
+                        "strengths": [
+                            "近战爆发强",
+                            "防御力高",
+                            "适应性强"
+                        ],
+                        "weaknesses": [
+                            "远程手段有限",
+                            "机动性一般"
+                        ],
+                        "common_affinities": [
+                            "力量亲和"
+                        ],
+                        "population": "最多，约占驭素者60%"
+                    },
+                    {
+                        "name": "游侠（Ranger）",
+                        "description": "擅长远程攻击和追踪，源素多用于强化感官和远程武器。",
+                        "style": "远程输出，灵活机动",
+                        "typical_weapons": [
+                            "弓",
+                            "弩",
+                            "投掷武器"
+                        ],
+                        "strengths": [
+                            "远程精准",
+                            "感知敏锐",
+                            "适合侦察"
+                        ],
+                        "weaknesses": [
+                            "近战较弱",
+                            "需要距离"
+                        ],
+                        "common_affinities": [
+                            "感知亲和"
+                        ],
+                        "population": "约占驭素者15%"
+                    },
+                    {
+                        "name": "斗士（Duelist）",
+                        "description": "追求极致的攻击速度和技巧，源素集中于强化速度和攻击。",
+                        "style": "高速突进，一击必杀",
+                        "typical_weapons": [
+                            "细剑",
+                            "双刀",
+                            "短剑"
+                        ],
+                        "strengths": [
+                            "速度快",
+                            "爆发高",
+                            "技巧精湛"
+                        ],
+                        "weaknesses": [
+                            "防御较弱",
+                            "不适合持久战"
+                        ],
+                        "common_affinities": [
+                            "力量亲和",
+                            "感知亲和"
+                        ],
+                        "population": "约占驭素者10%"
+                    },
+                    {
+                        "name": "守卫（Guardian）",
+                        "description": "专注于防御和保护，源素主要用于护盾和防护技能。",
+                        "style": "坚不可摧，掩护队友",
+                        "typical_weapons": [
+                            "重盾",
+                            "长矛",
+                            "重甲"
+                        ],
+                        "strengths": [
+                            "防御极强",
+                            "护盾持久",
+                            "团队核心"
+                        ],
+                        "weaknesses": [
+                            "攻击力较低",
+                            "机动性差"
+                        ],
+                        "common_affinities": [
+                            "力量亲和",
+                            "生命亲和"
+                        ],
+                        "population": "约占驭素者8%"
+                    },
+                    {
+                        "name": "元素师（Elementalist）",
+                        "description": "拥有元素亲和的稀有驭素者，可以在攻击中附加元素效果。",
+                        "style": "元素攻击，范围杀伤",
+                        "typical_weapons": [
+                            "法杖",
+                            "短杖",
+                            "轻武器"
+                        ],
+                        "strengths": [
+                            "元素伤害",
+                            "范围攻击",
+                            "效果多样"
+                        ],
+                        "weaknesses": [
+                            "近战弱",
+                            "消耗大",
+                            "需要天赋"
+                        ],
+                        "common_affinities": [
+                            "元素倾向（必须）"
+                        ],
+                        "population": "稀少，约占驭素者5%",
+                        "note": "必须拥有元素亲和才能成为元素师"
+                    },
+                    {
+                        "name": "生命师（Vitalist）",
+                        "description": "拥有生命亲和的稀有驭素者，擅长恢复和强化生命力。",
+                        "style": "治疗支援，持久作战",
+                        "typical_weapons": [
+                            "轻武器",
+                            "无武器"
+                        ],
+                        "strengths": [
+                            "恢复能力",
+                            "辅助队友",
+                            "持久力强"
+                        ],
+                        "weaknesses": [
+                            "正面战斗弱",
+                            "依赖队友"
+                        ],
+                        "common_affinities": [
+                            "生命亲和（必须）"
+                        ],
+                        "population": "极稀少，约占驭素者2%",
+                        "note": "必须拥有生命亲和才能成为生命师"
+                    }
+                ],
+                "balance_notes": [
+                    "同境界下各职业战力相当，只是风格不同",
+                    "战士最多，是军队主力",
+                    "元素师和生命师需要特定天赋，较为稀少",
+                    "高阶驭素者通常会融合多种风格",
+                    "职业只是大致分类，每个人的实际能力都有差异"
+                ]
+            },
+            "combat_manifestations": {
+                "description": "驭素者在战斗中的能力表现",
+                "examples": [
+                    {
+                        "name": "源素强化",
+                        "description": "最基础的能力，将源素灌注于身体或武器",
+                        "min_level": 1,
+                        "effect": "提升攻击力和防御力"
+                    },
+                    {
+                        "name": "刃气/剑气",
+                        "description": "将源素凝聚成锋锐形态外放",
+                        "min_level": 3,
+                        "effect": "远程攻击，切割力强"
+                    },
+                    {
+                        "name": "源素护盾",
+                        "description": "在身体周围形成防护",
+                        "min_level": 2,
+                        "effect": "抵御物理和源素攻击"
+                    },
+                    {
+                        "name": "领域压制",
+                        "description": "释放领域，压制敌人",
+                        "min_level": 4,
+                        "effect": "范围内敌人被削弱"
+                    },
+                    {
+                        "name": "亲和技能",
+                        "description": "基于个人亲和的特殊能力",
+                        "min_level": 3,
+                        "effect": "因人而异，如火焰强化、感知锁定等"
+                    }
+                ]
+            },
+            "differences_from_magic": {
+                "description": "源素之力与传统魔法的区别",
+                "points": [
+                    "不需要咒语或法阵，以意志直接驾驭",
+                    "更偏向于强化和实体化，而非元素变幻",
+                    "与身体素质紧密相关，不是纯粹的精神力量",
+                    "没有明确的'法术'概念，更像是本能的延伸",
+                    "可以与武器战技完美融合"
+                ]
+            },
+            "rules": [
+                "境界越高，突破越难，概率越低",
+                "高境界对低境界有明显压制，但非绝对",
+                "战术配合可以弥补部分境界差距",
+                "军队可以形成'共鸣阵'，汇聚多人源素对抗高阶者",
+                "亲和类型会影响战斗风格，但不决定上限",
+                "天赋很重要，但后天努力和机缘同样关键"
+            ]
+        },
+        "magic_beast_system": {
+            "name": "魔兽等级体系",
+            "description": "魔兽天生能够运用源素，等级与驭素者境界大致对应",
+            "levels": [
+                {
+                    "level": 1,
+                    "name": "普通魔兽",
+                    "threat": "村庄级",
+                    "counter": "猎人小队"
+                },
+                {
+                    "level": 2,
+                    "name": "精英魔兽",
+                    "threat": "小队级",
+                    "counter": "凝聚者"
+                },
+                {
+                    "level": 3,
+                    "name": "领主魔兽",
+                    "threat": "军队级",
+                    "counter": "外显者领导的正规军"
+                },
+                {
+                    "level": 4,
+                    "name": "霸主魔兽",
+                    "threat": "城市级",
+                    "counter": "领域者"
+                },
+                {
+                    "level": 5,
+                    "name": "灾厄魔兽",
+                    "threat": "区域级",
+                    "counter": "大师"
+                },
+                {
+                    "level": 6,
+                    "name": "传说魔兽",
+                    "threat": "国家级",
+                    "counter": "圣阶"
+                }
+            ],
+            "traits": [
+                "魔兽天生比人类更易运用源素",
+                "高等魔兽可能拥有人类般的智慧",
+                "魔兽核心是重要的修炼资源",
+                "部分魔兽有独特的'亲和能力'"
+            ]
+        },
+        "social_system": {
+            "name": "封建领地制度",
+            "description": "中世纪风格的封建等级制度",
+            "noble_ranks": [
+                {
+                    "rank": 1,
+                    "title": "国王",
+                    "typical_power": "大师或顶级领域者"
+                },
+                {
+                    "rank": 2,
+                    "title": "公爵",
+                    "typical_power": "大师",
+                    "territory": "多个伯爵领"
+                },
+                {
+                    "rank": 3,
+                    "title": "侯爵",
+                    "typical_power": "顶级领域者",
+                    "territory": "数个伯爵领"
+                },
+                {
+                    "rank": 4,
+                    "title": "伯爵",
+                    "typical_power": "领域者",
+                    "territory": "数个子爵领"
+                },
+                {
+                    "rank": 5,
+                    "title": "子爵",
+                    "typical_power": "外显者",
+                    "territory": "数个男爵领"
+                },
+                {
+                    "rank": 6,
+                    "title": "男爵",
+                    "typical_power": "凝聚者",
+                    "territory": "一到数个村庄"
+                },
+                {
+                    "rank": 7,
+                    "title": "骑士领主",
+                    "typical_power": "凝聚者或感知者",
+                    "territory": "一个村庄左右"
+                }
+            ],
+            "power_structure": [
+                "个人武力可以提升地位，但不是唯一因素",
+                "领地经济、军队实力、政治联盟同样重要",
+                "高阶驭素者数量稀少，大多数贵族依赖军队和政治",
+                "庶子地位低于嫡子，但有实力可以逆袭"
+            ]
+        },
+        "technology_level": {
+            "name": "中世纪+源素技术",
+            "allowed": [
+                "冷兵器",
+                "源素强化装备",
+                "基础源素道具",
+                "马车",
+                "帆船"
+            ],
+            "forbidden": [
+                "火器",
+                "蒸汽机",
+                "电力"
+            ],
+            "notes": "存在一些利用源素的技术，但不普及"
+        },
+        "golden_finger_rules": {
+            "name": "星辰系统规则",
+            "rules": [
+                "每日基础抽奖次数：1次",
+                "额外抽奖需消耗星尘",
+                "任务类型：日常、成长、里程碑",
+                "奖励概率：白色70%、绿色20%、蓝色8%、紫色1.9%、金色0.1%",
+                "奖励需要主角自己开发利用",
+                "系统不提供任务指导",
+                "可能抽到驭素功法、亲和引导、特殊技巧等"
+            ]
+        }
+    }
+}

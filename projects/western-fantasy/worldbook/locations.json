@@ -1,0 +1,177 @@
+{
+    "locations": {
+        "loc_001": {
+            "id": "loc_001",
+            "name": "诺恩大陆",
+            "type": "continent",
+            "description": "故事发生的主要大陆，多国并存，魔兽遍布",
+            "first_appearance": "v01c001",
+            "geography": {
+                "regions": [
+                    "洛兰王国",
+                    "铁蔷薇帝国",
+                    "自由城邦联盟",
+                    "荒野领地",
+                    "深渊森林"
+                ]
+            }
+        },
+        "loc_002": {
+            "id": "loc_002",
+            "name": "洛兰王国",
+            "type": "kingdom",
+            "parent": "loc_001",
+            "description": "主角所在的老牌王国，内部派系复杂",
+            "first_appearance": "v01c001",
+            "geography": {
+                "position": "大陆中西部",
+                "size": "中等偏大的王国",
+                "climate": "温带为主",
+                "borders": [
+                    "北接铁蔷薇帝国",
+                    "东临自由城邦",
+                    "南部是荒野领地"
+                ]
+            },
+            "politics": {
+                "ruler": "洛兰三世",
+                "major_factions": [
+                    "王党派",
+                    "贵族派",
+                    "军功派"
+                ],
+                "current_situation": "国力稳定但有隐患，贵族势力较强"
+            }
+        },
+        "loc_003": {
+            "id": "loc_003",
+            "name": "诺斯领",
+            "aliases": [
+                "诺斯家领地",
+                "边境诺斯领"
+            ],
+            "type": "territory",
+            "parent": "loc_002",
+            "description": "主角起步的地方，边境小贵族领地，原本的诺斯家世袭领地",
+            "first_appearance": "v01c001",
+            "geography": {
+                "position": "洛兰王国南部边境",
+                "size": "男爵领规模",
+                "terrain": [
+                    "丘陵",
+                    "少量平原",
+                    "一条小河"
+                ],
+                "climate": "温带，冬季较冷",
+                "neighbors": [
+                    "北接XX子爵领",
+                    "东邻XX男爵领",
+                    "南面荒野"
+                ]
+            },
+            "status": {
+                "initial": {
+                    "population": 300,
+                    "settlements": [
+                        "诺斯堡（领主城堡，破旧）",
+                        "河谷村（主要聚落）"
+                    ],
+                    "condition": "衰败，田地荒废，人口流失",
+                    "threats": [
+                        "魔兽侵扰",
+                        "盗匪",
+                        "粮食不足"
+                    ]
+                },
+                "development_history": []
+            },
+            "resources": {
+                "known": [
+                    "可耕地",
+                    "河水",
+                    "少量木材"
+                ],
+                "potential": [
+                    "待探索"
+                ]
+            }
+        },
+        "loc_004": {
+            "id": "loc_004",
+            "name": "诺斯堡",
+            "type": "castle",
+            "parent": "loc_003",
+            "description": "诺斯家的领主城堡，年久失修但结构尚存",
+            "first_appearance": "v01c001",
+            "features": {
+                "buildings": [
+                    {
+                        "name": "主楼",
+                        "condition": "破旧但可住"
+                    },
+                    {
+                        "name": "城墙",
+                        "condition": "有缺口"
+                    },
+                    {
+                        "name": "马厩",
+                        "condition": "勉强可用"
+                    },
+                    {
+                        "name": "仓库",
+                        "condition": "空的"
+                    }
+                ],
+                "defense": "勉强能抵御小规模魔兽"
+            }
+        },
+        "loc_005": {
+            "id": "loc_005",
+            "name": "河谷村",
+            "type": "village",
+            "parent": "loc_003",
+            "description": "诺斯领唯一的主要聚落",
+            "first_appearance": "v01c003",
+            "population": {
+                "initial": 250,
+                "composition": "农民、少量猎人"
+            },
+            "features": {
+                "buildings": [
+                    "村长屋",
+                    "简陋民居",
+                    "公共井",
+                    "小神庙"
+                ],
+                "economy": "自给自足的农业",
+                "mood": "消极、对领主不信任"
+            }
+        },
+        "loc_006": {
+            "id": "loc_006",
+            "name": "南部荒野",
+            "type": "wilderness",
+            "parent": "loc_002",
+            "description": "诺斯领南面的荒野地带，魔兽频繁出没",
+            "first_appearance": "v01c010",
+            "geography": {
+                "terrain": [
+                    "丘陵",
+                    "灌木林",
+                    "沼泽"
+                ],
+                "threats": [
+                    "一二级魔兽常见",
+                    "偶有三级魔兽"
+                ]
+            },
+            "resources": {
+                "potential": [
+                    "魔兽材料",
+                    "野生资源",
+                    "可开垦土地"
+                ]
+            }
+        }
+    }
+}

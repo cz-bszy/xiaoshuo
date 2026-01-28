@@ -1,0 +1,23 @@
+# Mega Novel Orchestrator - Python依赖
+
+# OpenAI兼容客户端（用于DeepSeek API）
+openai>=1.0.0
+
+# 配置文件解析
+pyyaml>=6.0
+
+# 异步支持
+aiohttp>=3.8.0
+asyncio-throttle>=1.0.0
+
+# 数据处理
+pydantic>=2.0.0
+
+# 进度条（可选，用于命令行显示）
+tqdm>=4.65.0
+
+# 日志
+loguru>=0.7.0
+
+# 文本分析（可选）
+jieba>=0.42.0  # 中文分词

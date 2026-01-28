@@ -1,0 +1,126 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# API Keys & Secrets (重要！)
+config.py
+deepseek_api.txt
+*.key
+*.secret
+.env
+.env.local
+
+# SimpleMem 数据库与缓存
+lancedb_data/
+memory_db/
+*.db
+*.sqlite
+
+# PyTorch 模型与大文件
+*.whl
+*.bin
+*.onnx
+*.safetensors
+*.pt
+*.pth
+models/downloaded/
+torch-*.whl
+
+# 生成的章节内容（可选，根据需要调整）
+chapters/
+第一卷_完整版.txt
+*.txt.backup
+
+# 日志文件
+*.log
+logs/
+batch_write*.log
+
+# 备份文件
+backups/
+*.backup
+*.bak
+*~
+
+# IDE 配置
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS 生成文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# 测试覆盖率
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# 文档构建
+docs/_build/
+site/
+
+# 项目特定（根据需要调整）
+# 如果不想公开具体章节内容，取消下面的注释
+# projects/*/chapters/
+# projects/*/第*.txt
+# projects/*/*.json
+
+# 临时文件
+temp/
+tmp/
+*.tmp
+
+# 分析报告
+*_report.json
+consistency_report.md
+analysis_report.json

@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "current_chapter": 60,
+    "last_updated": "2026-01-26",
+    "story_time": "第一年冬末，即将入春"
+  },
+  "protagonist": {
+    "name": "艾伦·诺斯",
+    "original_name": "林远（前世）",
+    "past_job": "工程师",
+    "age": 25,
+    "identity": "诺斯领领主(男爵)",
+    "realm": {
+      "current": "凝聚者",
+      "level": "初阶",
+      "detail": "刚突破，基础不稳，需要巩固",
+      "breakthrough_chapter": 60
+    },
+    "skills": [
+      {
+        "name": "源素共鸣",
+        "level": "基础",
+        "source": "系统奖励(第45章)"
+      }
+    ],
+    "equipment": [
+      "普通短剑",
+      "皮甲"
+    ],
+    "location": "诺斯堡",
+    "gold": 50,
+    "traits": [
+      "务实冷静",
+      "善于规划",
+      "重信守诺",
+      "不冲动"
+    ],
+    "secrets": [
+      "穿越者身份",
+      "星辰系统"
+    ],
+    "background": {
+      "status": "庶子",
+      "mother": "已故（几年前病逝）",
+      "exclusion_reason": "庶子身份、母亲去世、家族资源紧张",
+      "current_residence": "诺斯本家偏远别院 → 诺斯堡"
+    }
+  },
+  "system": {
+    "name": "星辰系统",
+    "level": 2,
+    "functions": {
+      "daily_lottery": true,
+      "task_system": true,
+      "storage_space": true
+    },
+    "lottery_history": [
+      {
+        "chapter": 5,
+        "item": "源素基础导引法",
+        "quality": "精良"
+      },
+      {
+        "chapter": 45,
+        "item": "源素共鸣技能",
+        "quality": "稀有"
+      }
+    ]
+  },
+  "territory": {
+    "name": "诺斯领",
+    "type": "男爵领",
+    "location": "洛兰王国边境",
+    "population": 420,
+    "status": "初步稳定",
+    "facilities": [
+      {
+        "name": "诺斯堡",
+        "status": "修缮中",
+        "progress": "60%"
+      },
+      {
+        "name": "锻造坊",
+        "status": "运营中",
+        "manager": "托尔"
+      },
+      {
+        "name": "面包房",
+        "status": "运营中"
+      },
+      {
+        "name": "水渠",
+        "status": "基本完成"
+      }
+    ],
+    "military": {
+      "patrol_team": 20,
+      "militia": 50,
+      "leader": "格雷"
+    },
+    "economy": {
+      "food_status": "勉强过冬",
+      "trade_partner": "马库斯商队",
+      "income_sources": [
+        "农业",
+        "铁器贸易"
+      ]
+    }
+  },
+  "characters": {
+    "塞巴斯": {
+      "role": "管家",
+      "age": 60,
+      "status": "健康",
+      "location": "诺斯堡",
+      "loyalty": "极高",
+      "traits": [
+        "忠诚",
+        "谨慎",
+        "阅历丰富"
+      ],
+      "first_appearance": 1
+    },
+    "格雷": {
+      "role": "巡逻队长",
+      "age": 35,
+      "status": "健康",
+      "location": "诺斯堡",
+      "loyalty": "较高",
+      "realm": "感知者中期",
+      "traits": [
+        "沉稳",
+        "多疑",
+        "前军人"
+      ],
+      "first_appearance": 13
+    },
+    "托尔": {
+      "role": "铁匠",
+      "age": 50,
+      "status": "健康",
+      "location": "锻造坊",
+      "loyalty": "较高",
+      "traits": [
+        "沉默寡言",
+        "技艺精湛"
+      ],
+      "first_appearance": 40
+    },
+    "汤姆": {
+      "role": "侍从",
+      "age": 15,
+      "status": "健康",
+      "location": "诺斯堡",
+      "loyalty": "极高",
+      "traits": [
+        "勤奋",
+        "好学"
+      ],
+      "first_appearance": 10
+    },
+    "马库斯": {
+      "role": "商人",
+      "age": 45,
+      "status": "健康",
+      "location": "王都（流动）",
+      "relationship": "贸易伙伴",
+      "traits": [
+        "精明",
+        "务实"
+      ],
+      "first_appearance": 50
+    },
+    "祖父（埃德加·诺斯）": {
+      "role": "已故祖父",
+      "status": "已故",
+      "death": "二十年前边境战争中战死",
+      "realm": "外显者高阶"
+    },
+    "父亲（斯蒂芬·诺斯）": {
+      "role": "现任家主",
+      "status": "在世",
+      "location": "诺斯本家（王都）",
+      "realm": "凝聚者巅峰",
+      "relationship": "冷淡疏离"
+    }
+  },
+  "world_rules": {
+    "realm_system": {
+      "levels": [
+        "感知者",
+        "凝聚者",
+        "外显者",
+        "领域者",
+        "大师",
+        "圣阶"
+      ],
+      "power_source": "源素",
+      "cultivation_method": "意志驾驭源素"
+    },
+    "noble_system": {
+      "ranks": [
+        "男爵",
+        "子爵",
+        "伯爵",
+        "侯爵",
+        "公爵",
+        "王族"
+      ]
+    },
+    "currency": {
+      "gold": "基本货币",
+      "ratio": "1金=100银=10000铜"
+    }
+  },
+  "timeline": [
+    {
+      "chapter": 1,
+      "event": "穿越附身艾伦·诺斯",
+      "time": "第一年初秋"
+    },
+    {
+      "chapter": 4,
+      "event": "星辰系统激活",
+      "time": "第一年初秋"
+    },
+    {
+      "chapter": 10,
+      "event": "决定前往诺斯领",
+      "time": "第一年初秋"
+    },
+    {
+      "chapter": 18,
+      "event": "抵达诺斯堡",
+      "time": "第一年秋中"
+    },
+    {
+      "chapter": 30,
+      "event": "突破感知者",
+      "time": "第一年秋末"
+    },
+    {
+      "chapter": 50,
+      "event": "马库斯商队到访",
+      "time": "第一年初冬"
+    },
+    {
+      "chapter": 60,
+      "event": "突破凝聚者",
+      "time": "第一年冬末"
+    }
+  ],
+  "recent_events": [
+    "第55章：建立情报网络",
+    "第56章：发现内部间谍",
+    "第57章：清除隐患",
+    "第58章：熬过严冬",
+    "第59章：修炼达临界点",
+    "第60章：突破凝聚者境界"
+  ],
+  "pending_threads": [
+    {
+      "thread": "马库斯商队春季回访",
+      "urgency": "中",
+      "expected_chapter": "61-65"
+    },
+    {
+      "thread": "边境魔兽异动",
+      "urgency": "高",
+      "expected_chapter": "62+"
+    },
+    {
+      "thread": "诺斯本家的态度",
+      "urgency": "低",
+      "expected_chapter": "70+"
+    },
+    {
+      "thread": "第二批流民",
+      "urgency": "中",
+      "expected_chapter": "65+"
+    }
+  ],
+  "forbidden_elements": {
+    "modern_terms": [
+      "电脑",
+      "手机",
+      "网络",
+      "汽车",
+      "互联网",
+      "投资",
+      "现金流"
+    ],
+    "dead_characters": [],
+    "resolved_threads": [
+      "内部间谍问题"
+    ]
+  }
+}

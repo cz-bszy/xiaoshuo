@@ -1,0 +1,165 @@
+{
+  "characters": {
+    "main_001": {
+      "id": "main_001",
+      "name": "艾伦·诺斯",
+      "original_name": "林远",
+      "aliases": ["领主", "大人", "诺斯少爷"],
+      "type": "main",
+      "first_appearance": "v01c001",
+      
+      "basic": {
+        "gender": "male",
+        "age_start": 25,
+        "age_current": 25,
+        "origin": "穿越者（原城市规划师）",
+        "appearance": {
+          "height": "中等偏高，约178cm",
+          "build": "普通，后期逐渐健壮",
+          "hair": "深棕色，微卷",
+          "eyes": "灰蓝色",
+          "features": ["目光沉稳", "表情不多变"]
+        }
+      },
+      
+      "personality": {
+        "core_traits": ["务实", "善于规划", "果断", "适应力强", "不冲动"],
+        "fears": ["重蹈前世碌碌无为的覆辙"],
+        "desires": ["建立自己的势力和基业"],
+        "speech_pattern": "简洁直接，偶尔展现现代人的幽默",
+        "habits": ["喜欢做计划", "重视情报", "习惯性复盘"]
+      },
+      
+      "abilities": {
+        "pre_transmigration": ["城市规划知识", "管理咨询经验", "现代常识"],
+        "cultivation": {
+          "current_realm": "无",
+          "realm_history": []
+        },
+        "skills": ["规划能力", "识人之明"],
+        "limitations": ["初期战斗力弱", "不了解本地常识"]
+      },
+      
+      "golden_finger": {
+        "name": "星辰系统",
+        "type": "抽奖系统",
+        "core_function": "完成任务获得星尘，消耗星尘抽奖获得奖励",
+        "limitations": ["每日次数有限", "高级概率低", "需自己开发利用"]
+      },
+      
+      "relationships": {},
+      
+      "arc": {
+        "overall": "从一无所有到建立霸业",
+        "current_stage": "初始",
+        "growth_points": []
+      },
+      
+      "appearances": []
+    },
+    
+    "side_001": {
+      "id": "side_001",
+      "name": "塞巴斯·格兰特",
+      "aliases": ["老管家", "塞巴斯"],
+      "type": "side_major",
+      "first_appearance": "v01c002",
+      
+      "basic": {
+        "gender": "male",
+        "age_start": 58,
+        "appearance": {
+          "height": "中等",
+          "hair": "花白",
+          "eyes": "棕色",
+          "features": ["总是穿着整洁", "身姿挺拔"]
+        }
+      },
+      
+      "personality": {
+        "core_traits": ["忠诚", "老练", "话不多", "观察敏锐"],
+        "speech_pattern": "恭敬但不谄媚，偶尔直言不讳"
+      },
+      
+      "abilities": {
+        "cultivation": {"current_realm": "初潮者"},
+        "skills": ["管家技能", "了解贵族礼仪", "领地常识"],
+        "background": "曾是诺斯家全盛时期的管家"
+      },
+      
+      "role": "主角初期的向导和助手，提供本地知识支持",
+      
+      "appearances": []
+    },
+    
+    "side_002": {
+      "id": "side_002",
+      "name": "格雷·铁拳",
+      "aliases": ["格雷", "铁拳"],
+      "type": "side_major",
+      "first_appearance": "v01c015",
+      
+      "basic": {
+        "gender": "male",
+        "age_start": 32,
+        "appearance": {
+          "height": "高大",
+          "build": "魁梧",
+          "hair": "黑色短发",
+          "eyes": "深褐色",
+          "features": ["左脸有刀疤", "手掌粗糙"]
+        }
+      },
+      
+      "personality": {
+        "core_traits": ["硬朗", "重义气", "不善言辞", "战斗经验丰富"],
+        "speech_pattern": "简短有力，不说废话"
+      },
+      
+      "abilities": {
+        "cultivation": {"current_realm": "涌潮者"},
+        "skills": ["战斗经验", "带兵能力", "野外生存"],
+        "background": "原佣兵团小队长，因战败流落至此"
+      },
+      
+      "role": "军事统领，主角武力臂膀",
+      
+      "appearances": []
+    },
+    
+    "side_003": {
+      "id": "side_003",
+      "name": "马库斯·银币",
+      "aliases": ["马库斯", "银币商人"],
+      "type": "side_major",
+      "first_appearance": "v01c030",
+      
+      "basic": {
+        "gender": "male",
+        "age_start": 45,
+        "appearance": {
+          "height": "中等偏矮",
+          "build": "微胖",
+          "hair": "稀疏棕发",
+          "eyes": "精明的小眼睛",
+          "features": ["总是带着笑容", "衣着讲究"]
+        }
+      },
+      
+      "personality": {
+        "core_traits": ["精明", "圆滑", "重利但守信", "消息灵通"],
+        "speech_pattern": "滔滔不绝，善于察言观色"
+      },
+      
+      "abilities": {
+        "cultivation": {"current_realm": "初潮者"},
+        "skills": ["商业头脑", "人脉广泛", "情报收集"],
+        "background": "中等商人，在边境地区有商路"
+      },
+      
+      "role": "商业合作伙伴和情报来源",
+      
+      "appearances": []
+    }
+  }
+}

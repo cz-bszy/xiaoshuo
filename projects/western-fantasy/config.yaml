@@ -1,0 +1,47 @@
+# 项目配置
+
+project:
+  name: "西幻种田：穿越者的领地崛起"
+  target_words: 4500000      # 目标字数：450万
+  words_per_chapter: 5000    # 每章字数：5000+
+  chapters_per_volume: 180   # 每卷约180章（90万字/5000字）
+  total_volumes: 5           # 总卷数
+  
+models:
+  writing:
+    provider: deepseek
+    model: deepseek-chat
+    api_key: sk-3fef5f8321894ce1a6ec23c8c8e8f35b
+    api_base: https://api.deepseek.com
+    temperature: 0.85
+    max_tokens: 6000         # 支持5000+字输出
+    
+automation:
+  auto_write_batch: 3        # 每批自动写作3章
+  quality_check_interval: 5  # 每5章质量检查
+  auto_save: true
+  backup_interval: 10
+  output_format: txt         # 输出为txt格式
+  filename_format: chapter_title  # 以章节名命名
+  
+quality:
+  min_words_per_chapter: 5000  # 最少5000字
+  max_words_per_chapter: 7000  # 最多7000字
+  consistency_check: true
+  style_check: true
+
+# 类型设定
+genre:
+  type: western-fantasy-farming
+  sub_types:
+    - 系统流
+    - 领地建设
+    - 军政
+    - 个人成长
+  
+# 节奏配置
+pacing:
+  daily_farming: 55         # 日常种田55%
+  personal_growth: 20       # 个人提升20%
+  conflict_events: 15       # 冲突事件15%
+  political_military: 10    # 军政情节10%
