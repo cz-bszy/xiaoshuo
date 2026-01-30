@@ -1,0 +1,7 @@
+system:
+  warehouse:
+    accessible: false
+    unlocked_by: null
+    last_update_chapter: 0
+    evidence: "初始：系统仓库不可打开"
+    strict: true

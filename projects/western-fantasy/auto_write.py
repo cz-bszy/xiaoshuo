@@ -1,89 +1,111 @@
 """
 自动化写作主脚本
-批量生成章纲 + 调用DeepSeek API写作 + 质量检查
+新增硬状态闭环：Plan → Validate → Write → Extract → Validate → Commit → Memory
 """
 
-import os
-import sys
 import json
+import re
+import sys
 import time
-import yaml
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+
+import yaml
 from openai import OpenAI
+
 from story_state_manager import StoryStateManager
+from story_memory_adapter import StoryMemoryAdapter
+from consistency_checker import run_consistency_check
 
-# 项目路径
-PROJECT_PATH = Path(r"e:\Test\xiaoshuo\projects\western-fantasy")
-SCRIPTS_PATH = Path(r"e:\Test\xiaoshuo\skills\mega-novel-orchestrator\mega-novel-orchestrator\scripts")
 
-# 加载API密钥
-with open(r"e:\Test\xiaoshuo\deepseek_api.txt", 'r') as f:
-    API_KEY = f.read().strip()
+PROJECT_PATH = Path(__file__).resolve().parent
+REPO_ROOT = PROJECT_PATH.parents[1]
 
-# 初始化客户端
-client = OpenAI(
-    api_key=API_KEY,
-    base_url="https://api.deepseek.com"
-)
 
-# 加载项目配置
-with open(PROJECT_PATH / "config.yaml", 'r', encoding='utf-8') as f:
+def load_api_key() -> str:
+    api_path = REPO_ROOT / "deepseek_api.txt"
+    if api_path.exists():
+        return api_path.read_text(encoding="utf-8").strip()
+    config_path = PROJECT_PATH / "config.yaml"
+    if config_path.exists():
+        data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+        return data.get("models", {}).get("writing", {}).get("api_key", "")
+    return ""
+
+
+with open(PROJECT_PATH / "config.yaml", "r", encoding="utf-8") as f:
     CONFIG = yaml.safe_load(f)
 
+MODEL_CONFIG = CONFIG.get("models", {}).get("writing", {})
+MODEL_NAME = MODEL_CONFIG.get("model", "deepseek-chat")
+API_BASE = MODEL_CONFIG.get("api_base", "https://api.deepseek.com")
+TEMPERATURE = MODEL_CONFIG.get("temperature", 0.85)
+MAX_TOKENS = MODEL_CONFIG.get("max_tokens", 6000)
+
+API_KEY = load_api_key()
+
+client = OpenAI(api_key=API_KEY, base_url=API_BASE)
+
+
 # 加载世界书
-def load_worldbook():
+
+def load_worldbook() -> Dict[str, Any]:
     worldbook = {}
-    for name in ["characters", "locations", "rules"]:
+    for name in ["characters", "locations", "rules", "items"]:
         path = PROJECT_PATH / "worldbook" / f"{name}.json"
         if path.exists():
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, "r", encoding="utf-8") as f:
                 worldbook[name] = json.load(f)
     return worldbook
 
+
 WORLDBOOK = load_worldbook()
 
+
 # 加载创作宪法和规格
-def load_constitution():
+
+def load_constitution() -> str:
     path = PROJECT_PATH / "constitution.md"
     if path.exists():
-        with open(path, 'r', encoding='utf-8') as f:
-            return f.read()
+        return path.read_text(encoding="utf-8")
     return ""
 
-def load_specification():
+
+def load_specification() -> str:
     path = PROJECT_PATH / "specification.md"
     if path.exists():
-        with open(path, 'r', encoding='utf-8') as f:
-            return f.read()
+        return path.read_text(encoding="utf-8")
     return ""
+
 
 CONSTITUTION = load_constitution()
 SPECIFICATION = load_specification()
 
+
 # 加载卷纲和篇纲
-def load_volume_outline(volume: int):
+
+def load_volume_outline(volume: int) -> str:
     path = PROJECT_PATH / "outline" / "L1-volumes" / f"v{volume:02d}.md"
     if path.exists():
-        with open(path, 'r', encoding='utf-8') as f:
-            return f.read()
+        return path.read_text(encoding="utf-8")
     return ""
 
-def load_part_outline(volume: int, part: int):
+
+def load_part_outline(volume: int, part: int) -> str:
     path = PROJECT_PATH / "outline" / "L2-parts" / f"v{volume:02d}-p{part:02d}.md"
     if path.exists():
-        with open(path, 'r', encoding='utf-8') as f:
-            return f.read()
+        return path.read_text(encoding="utf-8")
     return ""
 
+
 # 生成章纲
-def generate_chapter_outline(volume: int, chapter: int, title: str, main_content: str):
-    """使用DeepSeek生成章纲"""
-    
+
+def generate_chapter_outline(volume: int, chapter: int, title: str, main_content: str) -> str:
     volume_outline = load_volume_outline(volume)
-    part = (chapter - 1) // 30 + 1  # 每30章一篇
+    part = (chapter - 1) // 30 + 1
     part_outline = load_part_outline(volume, part)
-    
+
     prompt = f"""你是一位专业的网络小说策划编辑。请根据以下信息，为第{chapter}章生成详细的章纲。
 
 ## 故事规格（摘要）
@@ -142,31 +164,163 @@ def generate_chapter_outline(volume: int, chapter: int, title: str, main_content
 """
 
     response = client.chat.completions.create(
-        model="deepseek-chat",
+        model=MODEL_NAME,
         messages=[
-            {"role": "system", "content": "你是一位专业的网络小说策划编辑，擅长创作西幻种田类小说的章纲。输出要简洁、实用，便于后续写作。"},
-            {"role": "user", "content": prompt}
+            {
+                "role": "system",
+                "content": "你是专业的网络小说策划编辑，擅长创作西幻种田类小说的章纲。输出要简洁、实用，便于后续写作。",
+            },
+            {"role": "user", "content": prompt},
         ],
         temperature=0.7,
-        max_tokens=2000
+        max_tokens=2000,
     )
-    
+
     return response.choices[0].message.content
 
-# 写作章节
-def write_chapter(volume: int, chapter: int, chapter_outline: str, prev_chapter_content: str = "", context: str = ""):
-    """使用DeepSeek写作章节"""
-    
-    prompt = f"""你是一位专业的网络小说写手，擅长创作西幻种田类小说。请根据以下章纲写作完整的章节内容。
+
+# 工具函数
+
+def _extract_json(text: str) -> Any:
+    try:
+        return json.loads(text)
+    except Exception:
+        pass
+
+    json_block = re.search(r"```json\s*([\s\S]*?)\s*```", text)
+    if json_block:
+        return json.loads(json_block.group(1))
+
+    obj_block = re.search(r"(\{[\s\S]*\}|\[[\s\S]*\])", text)
+    if obj_block:
+        return json.loads(obj_block.group(1))
+
+    raise ValueError("无法解析JSON输出")
+
+
+def _has_error(issues: List[Dict[str, Any]]) -> bool:
+    return any(issue.get("severity") == "error" for issue in issues)
+
+
+# 计划生成 / 修复
+
+def llm_generate_plan(
+    chapter_num: int,
+    title: str,
+    outline: str,
+    snapshot: Dict[str, Any],
+    invariants_text: str,
+    memory_context: str,
+) -> Dict[str, Any]:
+    hard_state = StoryStateManager.format_snapshot_for_prompt(snapshot)
+
+    prompt = f"""你是小说章节规划器。请根据章纲与硬状态，输出严格JSON计划。
+
+## 硬状态快照（必须遵守）
+{hard_state}
+
+## 硬规则（不得违反）
+{invariants_text}
+
+## 章纲
+{outline}
+
+## 记忆背景（参考）
+{memory_context}
+
+## 输出要求
+1. 只输出严格JSON
+2. 必须包含字段：chapter_num, title, actions, state_changes
+3. 若要访问仓库，必须先在 state_changes 中声明解锁原因
+
+示例结构：
+{{
+  "chapter_num": {chapter_num},
+  "title": "{title}",
+  "actions": [
+    {{"type": "scene", "description": "..."}},
+    {{"type": "warehouse_withdraw", "actor": "艾伦", "notes": "若未解锁则不得成功"}}
+  ],
+  "state_changes": [
+    {{"path": "system.warehouse.accessible", "from": false, "to": true, "cause_event": "完成任务获得权限"}}
+  ]
+}}
+"""
+
+    response = client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[
+            {"role": "system", "content": "你是严谨的小说规划师，擅长输出结构化JSON计划。"},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.3,
+        max_tokens=2000,
+    )
+    return _extract_json(response.choices[0].message.content)
+
+
+def llm_fix_plan(plan: Dict[str, Any], issues: List[Dict[str, Any]], snapshot: Dict[str, Any]) -> Dict[str, Any]:
+    hard_state = StoryStateManager.format_snapshot_for_prompt(snapshot)
+    prompt = f"""以下计划存在硬状态冲突，请修复并输出严格JSON（只输出JSON）。
+
+## 硬状态快照
+{hard_state}
+
+## 原计划
+{json.dumps(plan, ensure_ascii=False, indent=2)}
+
+## 问题
+{json.dumps(issues, ensure_ascii=False, indent=2)}
+
+修复要求：
+- 若仓库不可用，必须改写为失败或补解锁桥段
+- 保持其余内容不变
+"""
+
+    response = client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[
+            {"role": "system", "content": "你是严谨的小说规划师，擅长修复JSON计划。"},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.2,
+        max_tokens=2000,
+    )
+    return _extract_json(response.choices[0].message.content)
+
+
+# 写作 / 修复
+
+def llm_write_chapter(
+    chapter_num: int,
+    plan: Dict[str, Any],
+    outline: str,
+    snapshot: Dict[str, Any],
+    invariants_text: str,
+    memory_context: str,
+    prev_chapter_content: str,
+) -> str:
+    hard_state = StoryStateManager.format_snapshot_for_prompt(snapshot)
+
+    prompt = f"""你是专业的网络小说写手，擅长创作西幻种田类小说。请根据计划写作完整章节内容。
 
 ## 创作宪法（核心原则）
 {CONSTITUTION[:1500]}
 
-## 章纲
-{chapter_outline}
+## 硬状态快照（必须遵守）
+{hard_state}
 
-## 故事状态与记忆（核心参考）
-{context}
+## 硬规则（不得违反）
+{invariants_text}
+
+## 计划（JSON）
+{json.dumps(plan, ensure_ascii=False, indent=2)}
+
+## 章纲（补充参考）
+{outline}
+
+## 记忆背景（参考）
+{memory_context}
 
 ## 前一章结尾（续写参考）
 {prev_chapter_content[-2000:] if prev_chapter_content else "（第1章，无前文）"}
@@ -183,100 +337,145 @@ def write_chapter(volume: int, chapter: int, chapter_outline: str, prev_chapter_
 """
 
     response = client.chat.completions.create(
-        model="deepseek-chat",
+        model=MODEL_NAME,
         messages=[
-            {"role": "system", "content": "你是一位顶级网络小说写手，擅长西幻种田流。你的文风流畅自然，擅长人物塑造和节奏把控。每章至少5000字。"},
-            {"role": "user", "content": prompt}
+            {
+                "role": "system",
+                "content": "你是顶级网络小说写手，文风流畅自然，擅长人物塑造和节奏把控。",
+            },
+            {"role": "user", "content": prompt},
         ],
-        temperature=0.85,
-        max_tokens=8000
+        temperature=TEMPERATURE,
+        max_tokens=MAX_TOKENS,
     )
-    
+
     return response.choices[0].message.content
 
+
+def llm_repair_chapter(
+    chapter_text: str,
+    plan: Dict[str, Any],
+    snapshot: Dict[str, Any],
+    issues: List[Dict[str, Any]],
+    repairs: List[Dict[str, Any]],
+) -> str:
+    hard_state = StoryStateManager.format_snapshot_for_prompt(snapshot)
+    invariants_text = StoryStateManager.format_invariants_for_prompt(snapshot.get("invariants", []))
+
+    prompt = f"""以下章节存在硬状态矛盾，请最小改写修复。要求：
+- 只改动相关段落，不重写整章
+- 两种修复路线任选其一：
+  A) 改写为访问失败/权限不足
+  B) 在首次成功访问前插入解锁桥段，并保证因果闭合
+
+## 硬状态快照
+{hard_state}
+
+## 硬规则
+{invariants_text}
+
+## 问题
+{json.dumps(issues, ensure_ascii=False, indent=2)}
+
+## 修复指令包
+{json.dumps(repairs, ensure_ascii=False, indent=2)}
+
+## 计划
+{json.dumps(plan, ensure_ascii=False, indent=2)}
+
+## 原文
+{chapter_text}
+
+请输出修复后的章节正文：
+"""
+
+    response = client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[
+            {"role": "system", "content": "你是严谨的小说修订编辑。"},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.4,
+        max_tokens=MAX_TOKENS,
+    )
+
+    return response.choices[0].message.content
+
+
 # 质量检查
-def check_quality(content: str, chapter: int):
-    """基本质量检查"""
+
+def check_quality(content: str, chapter: int) -> Dict[str, Any]:
     issues = []
-    
-    # 字数检查
     word_count = len(content)
     if word_count < 4500:
         issues.append(f"字数不足：{word_count} < 4500")
-    
-    # 禁忌词检查
+
     forbidden = ["手机", "电脑", "汽车", "网络", "电力", "互联网"]
     for word in forbidden:
         if word in content:
             issues.append(f"可能的时代错误：包含'{word}'")
-    
-    # 系统检查（前3章不应出现）
+
     if chapter <= 3 and "系统" in content and "星辰" in content:
         issues.append("第1-3章不应出现系统")
-    
-    return {
-        "word_count": word_count,
-        "issues": issues,
-        "passed": len(issues) == 0
-    }
+
+    return {"word_count": word_count, "issues": issues, "passed": len(issues) == 0}
+
 
 # 保存章节
-def save_chapter(volume: int, chapter: int, title: str, content: str):
-    """保存章节到txt文件"""
+
+def save_chapter(volume: int, chapter: int, title: str, content: str) -> Path:
     chapter_dir = PROJECT_PATH / "chapters" / f"v{volume:02d}"
     chapter_dir.mkdir(parents=True, exist_ok=True)
-    
-    # 清理标题
+
     safe_title = title.replace(":", "：").replace("/", "_").replace("\\", "_")
     safe_title = safe_title.replace("?", "？").replace("*", "_").replace('"', "'")
-    
+
     filename = f"第{chapter}章_{safe_title}.txt"
     filepath = chapter_dir / filename
-    
-    with open(filepath, 'w', encoding='utf-8') as f:
+
+    with open(filepath, "w", encoding="utf-8") as f:
         f.write(f"第{chapter}章 {title}\n\n")
         f.write(content)
-    
-    print(f"  ✅ 已保存：{filename}")
+
     return filepath
+
 
 # 保存章纲
-def save_chapter_outline(volume: int, chapter: int, outline_content: str):
-    """保存章纲"""
+
+def save_chapter_outline(volume: int, chapter: int, outline_content: str) -> Path:
     outline_dir = PROJECT_PATH / "outline" / "L3-chapters"
     outline_dir.mkdir(parents=True, exist_ok=True)
-    
+
     filepath = outline_dir / f"v{volume:02d}-c{chapter:03d}.md"
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         f.write(outline_content)
-    
+
     return filepath
 
+
 # 加载章纲
-def load_chapter_outline(volume: int, chapter: int):
-    """加载已有章纲"""
+
+def load_chapter_outline(volume: int, chapter: int) -> Optional[str]:
     filepath = PROJECT_PATH / "outline" / "L3-chapters" / f"v{volume:02d}-c{chapter:03d}.md"
     if filepath.exists():
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return f.read()
+        return filepath.read_text(encoding="utf-8")
     return None
 
+
 # 加载前一章内容
-def load_prev_chapter(volume: int, chapter: int):
-    """加载前一章内容"""
+
+def load_prev_chapter(volume: int, chapter: int) -> str:
     if chapter <= 1:
         return ""
-    
+
     chapter_dir = PROJECT_PATH / "chapters" / f"v{volume:02d}"
-    # 查找前一章文件
     for f in chapter_dir.glob(f"第{chapter-1}章_*.txt"):
-        with open(f, 'r', encoding='utf-8') as file:
-            return file.read()
+        return f.read_text(encoding="utf-8")
     return ""
 
-# 所有章节规划（可扩展）
-ALL_CHAPTERS = {
-    # 第一篇：穿越觉醒（1-30）
+
+# 章节规划（可扩展）
+ALL_CHAPTERS: Dict[int, Tuple[str, str]] = {
     1: ("异世界醒来", "穿越附身，懵懂觉醒，初见世界"),
     2: ("破落的诺斯家", "认识塞巴斯，了解身份现状"),
     3: ("边缘人的处境", "庶子地位，家族边缘，困境展示"),
@@ -307,8 +506,6 @@ ALL_CHAPTERS = {
     28: ("巡逻队", "建立巡逻队，格雷负责"),
     29: ("突破契机", "战斗/危机触发突破"),
     30: ("感知者", "突破感知者境界，第一篇结束"),
-    
-    # 第二篇：领地初建（31-60）
     31: ("新的开始", "突破后的变化，制定发展计划"),
     32: ("春耕准备", "规划农业发展，播种高产种子"),
     33: ("开垦荒田", "组织流民开垦，扩大耕地面积"),
@@ -339,8 +536,6 @@ ALL_CHAPTERS = {
     58: ("春暖花开", "熬过冬天，迎来新的春天"),
     59: ("凝聚之路", "修炼达到临界点"),
     60: ("凝聚者", "突破凝聚者境界，第二篇结束"),
-    
-    # 第三篇：崛起之路（61-70）
     61: ("第一艘船", "春耕顺利，为了贸易，艾伦决定建立河运码头，探索水路"),
     62: ("商人的回归", "马库斯带回关于‘渡鸦’的情报，警告艾伦"),
     63: ("林中阴影", "巡逻队在森林遭遇‘渡鸦’精锐斥候，发生冲突"),
@@ -353,105 +548,226 @@ ALL_CHAPTERS = {
     70: ("备战", "扩充卫队，准备应对可能的冲突"),
 }
 
-def get_chapter_info(chapter: int):
-    """获取章节信息，如果没有预设则自动生成"""
+
+def get_chapter_info(chapter: int) -> Tuple[str, str]:
     if chapter in ALL_CHAPTERS:
         return ALL_CHAPTERS[chapter]
-    else:
-        # 自动生成章节信息
-        part = (chapter - 1) // 30 + 1
-        chapter_in_part = (chapter - 1) % 30 + 1
-        return (f"第{part}篇第{chapter_in_part}节", f"第{chapter}章内容待自动生成")
+    part = (chapter - 1) // 30 + 1
+    chapter_in_part = (chapter - 1) % 30 + 1
+    return (f"第{part}篇第{chapter_in_part}节", f"第{chapter}章内容待自动生成")
+
+
+# 生成与提交流程
+
+def save_artifacts(chapter: int, plan: Dict[str, Any], issues: List[Dict[str, Any]]):
+    report_dir = PROJECT_PATH / "state" / "reports"
+    report_dir.mkdir(parents=True, exist_ok=True)
+
+    plan_path = report_dir / f"plan_c{chapter:03d}.json"
+    with open(plan_path, "w", encoding="utf-8") as f:
+        json.dump(plan, f, ensure_ascii=False, indent=2)
+
+    issues_path = report_dir / f"issues_c{chapter:03d}.json"
+    with open(issues_path, "w", encoding="utf-8") as f:
+        json.dump(issues, f, ensure_ascii=False, indent=2)
+
+
+
+def generate_draft_payload(
+    chapter: int,
+    volume: int,
+    state_manager: StoryStateManager,
+    memory_adapter: Optional[StoryMemoryAdapter],
+) -> Dict[str, Any]:
+    title, main_content = get_chapter_info(chapter)
+
+    outline = load_chapter_outline(volume, chapter)
+    if not outline:
+        outline = generate_chapter_outline(volume, chapter, title, main_content)
+        save_chapter_outline(volume, chapter, outline)
+        time.sleep(1)
+
+    topics = [title, "领地建设", "外部威胁"]
+    snapshot = state_manager.get_snapshot(chapter, topic_keywords=topics)
+    invariants_text = StoryStateManager.format_invariants_for_prompt(snapshot.get("invariants", []))
+
+    local_memory_adapter = memory_adapter or StoryMemoryAdapter(clear_db=False)
+    memory_context = local_memory_adapter.get_writing_context(chapter, topics=topics)
+
+    plan = llm_generate_plan(chapter, title, outline, snapshot, invariants_text, memory_context)
+    issues = state_manager.validate_plan(plan, snapshot)
+    if _has_error(issues):
+        plan = llm_fix_plan(plan, issues, snapshot)
+        issues = state_manager.validate_plan(plan, snapshot)
+    save_artifacts(chapter, plan, issues)
+
+    prev_content = load_prev_chapter(volume, chapter)
+    draft = llm_write_chapter(
+        chapter,
+        plan,
+        outline,
+        snapshot,
+        invariants_text,
+        memory_context,
+        prev_content,
+    )
+    time.sleep(1)
+
+    return {
+        "chapter": chapter,
+        "title": title,
+        "outline": outline,
+        "plan": plan,
+        "plan_issues": issues,
+        "draft": draft,
+        "topics": topics,
+    }
+
+
+def commit_chapter_payload(
+    payload: Dict[str, Any],
+    volume: int,
+    state_manager: StoryStateManager,
+    memory_adapter: StoryMemoryAdapter,
+) -> Dict[str, Any]:
+    chapter = payload["chapter"]
+    title = payload["title"]
+    plan = payload["plan"]
+    draft = payload["draft"]
+    topics = payload["topics"]
+
+    snapshot = state_manager.get_snapshot(chapter, topic_keywords=topics)
+
+    plan_issues = state_manager.validate_plan(plan, snapshot)
+    if _has_error(plan_issues):
+        plan = llm_fix_plan(plan, plan_issues, snapshot)
+        plan_issues = state_manager.validate_plan(plan, snapshot)
+        if _has_error(plan_issues):
+            return {"chapter": chapter, "status": "failed", "issues": plan_issues}
+
+    post_issues = state_manager.validate_chapter(draft, snapshot)
+    if _has_error(post_issues):
+        checker_output = run_consistency_check(snapshot, plan, draft)
+        repairs = checker_output.get("repairs", [])
+        draft = llm_repair_chapter(draft, plan, snapshot, post_issues, repairs)
+        post_issues = state_manager.validate_chapter(draft, snapshot)
+        if _has_error(post_issues):
+            return {"chapter": chapter, "status": "failed", "issues": post_issues}
+
+    all_issues = plan_issues + post_issues
+
+    updates = state_manager.extract_state_updates(draft, chapter)
+    state_manager.commit(chapter, updates, all_issues)
+    save_artifacts(chapter, plan, all_issues)
+
+    quality = check_quality(draft, chapter)
+    save_chapter(volume, chapter, title, draft)
+    memory_adapter.add_chapter(chapter_num=chapter, content=draft, title=title)
+
+    return {
+        "chapter": chapter,
+        "status": "success",
+        "issues": all_issues,
+        "quality": quality,
+    }
+
+
+# 主流程
 
 def run_auto_write(start_chapter: int = 2, end_chapter: int = 30):
-    """运行自动写作"""
-    
     print("=" * 60)
     print(f"🚀 开始自动写作：第{start_chapter}章 到 第{end_chapter}章")
     print("=" * 60)
-    
+
     volume = 1
     total_words = 0
     stats = {"success": 0, "failed": 0, "issues": []}
-    
-    # 初始化状态管理器
-    state_manager = StoryStateManager()
-    
-    for chapter in range(start_chapter, end_chapter + 1):
-        print(f"\n📝 处理第{chapter}章...")
-        
-        # 获取章节信息
-        chapter_info = get_chapter_info(chapter)
-        title = chapter_info[0]
-        main_content = chapter_info[1]
-        
+
+    state_manager = StoryStateManager(project_path=PROJECT_PATH)
+    memory_adapter = StoryMemoryAdapter(clear_db=False)
+
+    writing_config = CONFIG.get("writing", {})
+    strict_state = writing_config.get("strict_state", True)
+    parallel_mode = writing_config.get("parallel_mode", "sequential_commit")
+    max_workers = int(writing_config.get("max_workers", 1))
+
+    if strict_state and parallel_mode == "full_parallel":
+        print("⚠️ strict_state=true，已降级为 sequential_commit")
+        parallel_mode = "sequential_commit"
+
+    chapters = list(range(start_chapter, end_chapter + 1))
+    payloads: Dict[int, Dict[str, Any]] = {}
+
+    if parallel_mode == "sequential_commit" and max_workers > 1:
+        print(f"⚡ 并行生成草稿（max_workers={max_workers}），串行提交状态")
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(
+                    generate_draft_payload,
+                    chapter,
+                    volume,
+                    state_manager,
+                    None,
+                ): chapter
+                for chapter in chapters
+            }
+            for future in as_completed(futures):
+                chapter = futures[future]
+                try:
+                    payloads[chapter] = future.result()
+                except Exception as e:
+                    stats["failed"] += 1
+                    stats["issues"].append(f"第{chapter}章：{str(e)}")
+    else:
+        for chapter in chapters:
+            try:
+                payloads[chapter] = generate_draft_payload(
+                    chapter, volume, state_manager, memory_adapter
+                )
+            except Exception as e:
+                stats["failed"] += 1
+                stats["issues"].append(f"第{chapter}章：{str(e)}")
+
+    for chapter in chapters:
+        if chapter not in payloads:
+            continue
         try:
-            # 1. 检查/生成章纲
-            outline = load_chapter_outline(volume, chapter)
-            if not outline:
-                print(f"  📋 生成章纲...")
-                outline = generate_chapter_outline(volume, chapter, title, main_content)
-                save_chapter_outline(volume, chapter, outline)
-                time.sleep(1)  # 避免API限流
-            
-            # 2. 加载前一章
-            prev_content = load_prev_chapter(volume, chapter)
-            
-            # 3. 生成上下文与写作
-            print(f"  🧠 生成记忆上下文...")
-            # 提取本章关键词作为主题
-            topics = [title, "领地建设", "外部威胁"]
-            context = state_manager.generate_context_for_writing(chapter, topics=topics)
-            
-            print(f"  ✍️ 写作中...")
-            content = write_chapter(volume, chapter, outline, prev_content, context)
-            time.sleep(2)  # 避免API限流
-            
-            # 4. 质量检查
-            quality = check_quality(content, chapter)
-            print(f"  📊 字数：{quality['word_count']}")
-            
-            if not quality["passed"]:
-                for issue in quality["issues"]:
-                    print(f"  ⚠️ {issue}")
-                    stats["issues"].append(f"第{chapter}章：{issue}")
-            
-            # 5. 保存
-            save_chapter(volume, chapter, title, content)
-            
-            total_words += quality["word_count"]
-            stats["success"] += 1
-            
-            # 每5章报告进度
-            if chapter % 5 == 0:
-                print(f"\n{'=' * 40}")
-                print(f"📊 进度报告：已完成 {chapter}/{end_chapter} 章")
-                print(f"   总字数：{total_words:,}")
-                print(f"{'=' * 40}\n")
-            
+            result = commit_chapter_payload(payloads[chapter], volume, state_manager, memory_adapter)
+            if result["status"] == "success":
+                stats["success"] += 1
+                quality = result.get("quality", {})
+                total_words += quality.get("word_count", 0)
+            else:
+                stats["failed"] += 1
+                stats["issues"].append(f"第{chapter}章：状态提交失败")
+                stats["issues"].extend([f"第{chapter}章：{i['message']}" for i in result.get("issues", [])])
         except Exception as e:
-            print(f"  ❌ 错误：{e}")
             stats["failed"] += 1
             stats["issues"].append(f"第{chapter}章：{str(e)}")
-    
-    # 最终报告
+
+        if chapter % 5 == 0:
+            print(f"\n{'=' * 40}")
+            print(f"📊 进度报告：已完成 {chapter}/{end_chapter} 章")
+            print(f"   总字数：{total_words:,}")
+            print(f"{'=' * 40}\n")
+
     print("\n" + "=" * 60)
     print("📊 自动写作完成报告")
     print("=" * 60)
     print(f"  成功：{stats['success']} 章")
     print(f"  失败：{stats['failed']} 章")
     print(f"  总字数：{total_words:,}")
-    
+
     if stats["issues"]:
         print("\n⚠️ 问题列表：")
         for issue in stats["issues"]:
             print(f"  - {issue}")
-    
+
     return stats
 
+
 if __name__ == "__main__":
-    # 默认从第2章开始（第1章已手写）
     start = int(sys.argv[1]) if len(sys.argv) > 1 else 2
-    end = int(sys.argv[2]) if len(sys.argv) > 2 else 5  # 默认先写5章测试
-    
+    end = int(sys.argv[2]) if len(sys.argv) > 2 else 5
+
     run_auto_write(start, end)

@@ -1,0 +1,5 @@
+invariants:
+  - id: system.warehouse.strict_access
+    description: "仓库功能在 accessible=false 时不得出现成功访问/取物/存物/查看库存等行为"
+    scope_keywords: ["仓库", "系统仓库", "库存", "取出", "存入", "打开仓库", "仓库界面"]
+    severity: "error"

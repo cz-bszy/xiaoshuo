@@ -9,14 +9,15 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 
 # 添加 SimpleMem 路径
-SIMPLEMEM_PATH = Path(r"e:\Test\xiaoshuo\SimpleMem")
+PROJECT_PATH = Path(__file__).resolve().parent
+REPO_ROOT = PROJECT_PATH.parents[1]
+SIMPLEMEM_PATH = REPO_ROOT / "SimpleMem"
 sys.path.insert(0, str(SIMPLEMEM_PATH))
 
 from main import SimpleMemSystem
 from models.memory_entry import MemoryEntry
 
 # 项目路径
-PROJECT_PATH = Path(r"e:\Test\xiaoshuo\projects\western-fantasy")
 CHAPTERS_PATH = PROJECT_PATH / "chapters" / "v01"
 
 

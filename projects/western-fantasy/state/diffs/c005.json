@@ -1,0 +1,15 @@
+{
+  "chapter": 5,
+  "updates": [
+    {
+      "path": "system.warehouse.accessible",
+      "value": true,
+      "valid_from": 5,
+      "valid_to": null,
+      "evidence": "穿越带来的不止是记忆，还有一个名为“星辰系统”的东西。它没有智能语音，没有详细说明，只在艾伦意识深处投射出一个简洁的界面——个人面板、任务列表、仓库（目前显示“不可访问”），以及一个灰色的、标注着“抽奖”的图标。",
+      "source_chapter": 5,
+      "strict": true,
+      "cause": "chapter_unlock"
+    }
+  ]
+}

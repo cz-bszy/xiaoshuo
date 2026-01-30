@@ -1,0 +1,15 @@
+{
+  "chapter": 1,
+  "updates": [
+    {
+      "path": "system.warehouse.accessible",
+      "value": true,
+      "valid_from": 1,
+      "valid_to": null,
+      "evidence": "艾伦没有继续前进，而是转身，朝着相反的方向——那里更暗，应该是通往仓库或仆役房间的区域。",
+      "source_chapter": 1,
+      "strict": true,
+      "cause": "chapter_unlock"
+    }
+  ]
+}

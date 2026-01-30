@@ -1,0 +1,10 @@
+[
+  {
+    "severity": "warn",
+    "rule_id": "system.warehouse.unlocked_in_chapter",
+    "message": "本章出现仓库成功访问，但仓库原本不可用；已检测到解锁桥段，请确保状态更新。",
+    "evidence_new": "艾伦没有继续前进，而是转身，朝着相反的方向——那里更暗，应该是通往仓库或仆役房间的区域。",
+    "evidence_old": null,
+    "suggestions": []
+  }
+]

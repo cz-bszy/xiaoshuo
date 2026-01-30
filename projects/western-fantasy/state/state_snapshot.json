@@ -1,0 +1,56 @@
+{
+  "last_chapter": 5,
+  "updated_at": "2026-01-30 13:17:40",
+  "entries": [
+    {
+      "path": "system.warehouse.accessible",
+      "value": false,
+      "valid_from": 0,
+      "valid_to": 0,
+      "evidence": "初始：系统仓库不可打开",
+      "source_chapter": 0,
+      "strict": true,
+      "cause": null
+    },
+    {
+      "path": "system.warehouse.unlocked_by",
+      "value": null,
+      "valid_from": 0,
+      "valid_to": null,
+      "evidence": "初始：系统仓库不可打开",
+      "source_chapter": 0,
+      "strict": false,
+      "cause": null
+    },
+    {
+      "path": "system.warehouse.accessible",
+      "value": true,
+      "valid_from": 1,
+      "valid_to": 3,
+      "evidence": "艾伦没有继续前进，而是转身，朝着相反的方向——那里更暗，应该是通往仓库或仆役房间的区域。",
+      "source_chapter": 1,
+      "strict": true,
+      "cause": "chapter_unlock"
+    },
+    {
+      "path": "system.warehouse.accessible",
+      "value": true,
+      "valid_from": 4,
+      "valid_to": 4,
+      "evidence": "界面右下角是【物品栏】，但现在是灰暗状态，旁边标注着：【暂未开启，后续解锁】。",
+      "source_chapter": 4,
+      "strict": true,
+      "cause": "chapter_unlock"
+    },
+    {
+      "path": "system.warehouse.accessible",
+      "value": true,
+      "valid_from": 5,
+      "valid_to": null,
+      "evidence": "穿越带来的不止是记忆，还有一个名为“星辰系统”的东西。它没有智能语音，没有详细说明，只在艾伦意识深处投射出一个简洁的界面——个人面板、任务列表、仓库（目前显示“不可访问”），以及一个灰色的、标注着“抽奖”的图标。",
+      "source_chapter": 5,
+      "strict": true,
+      "cause": "chapter_unlock"
+    }
+  ]
+}

@@ -46,7 +46,7 @@
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/YOUR_USERNAME/novel-writing-system.git
+git clone https://github.com/cz-bszy/xiaoshuo.git
 cd novel-writing-system
 
 # 2. 安装 SimpleMem 依赖
@@ -245,6 +245,8 @@ writing:
 
 ### 并行批量写作
 
+> **注意**：当 `strict_state=true` 时，系统会强制“串行提交状态”。建议使用 `parallel_mode=sequential_commit`，避免并行写作导致硬状态错位。
+
 ```python
 from concurrent.futures import ThreadPoolExecutor
 
@@ -253,7 +255,7 @@ def batch_write_parallel(chapter_list, max_workers=3):
         results = executor.map(write_single_chapter, chapter_list)
     return list(results)
 
-# 同时写作 5 章
+# 同时写作 5 章（仅并行生成，状态提交串行）
 batch_write_parallel([61, 62, 63, 64, 65], max_workers=3)
 ```
 

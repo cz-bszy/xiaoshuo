@@ -11,7 +11,8 @@ models:
   writing:
     provider: deepseek
     model: deepseek-chat
-    api_key: sk-3fef5f8321894ce1a6ec23c8c8e8f35b
+    # API密钥从 deepseek_api.txt 文件读取，请勿在此处填写
+    api_key: ""  # 留空，将从 deepseek_api.txt 读取
     api_base: https://api.deepseek.com
     temperature: 0.85
     max_tokens: 6000         # 支持5000+字输出
@@ -23,7 +24,12 @@ automation:
   backup_interval: 10
   output_format: txt         # 输出为txt格式
   filename_format: chapter_title  # 以章节名命名
-  
+
+writing:
+  strict_state: true
+  parallel_mode: sequential_commit  # off | sequential_commit | full_parallel
+  max_workers: 3
+
 quality:
   min_words_per_chapter: 5000  # 最少5000字
   max_words_per_chapter: 7000  # 最多7000字

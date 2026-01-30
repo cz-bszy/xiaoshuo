@@ -1,0 +1,451 @@
+
+
+一、目标与原则（ 必须遵守）
+
+1. 目标（必须达成）
+
+* 在系统层面“阻止”跨章硬矛盾写入：任何涉及系统功能/关键道具/角色能力的“状态型事实”，必须在写作前被验证；若不满足前置条件，必须自动修复（或打回重写），不得直接输出并写入记忆库。
+* 至少把你举例的“系统仓库”矛盾彻底解决：如果上一章 state=不可打开，则下一章不得出现“打开仓库/查看仓库物品/取出物品/存入物品”等成功行为，除非在剧情中明确写出“解锁/获得权限/触发升级”等因果桥段，并同步更新 state。
+
+2. 非目标（这版不强求，但结构要留好口）
+
+* 不要求一次性把全书知识图谱做完；先把“硬状态表 + 状态验证闭环”做稳。
+
+3. 核心原则（这版架构要贯彻）
+
+* “记忆（memory）”用于提供背景与灵感；“状态（state）”是硬约束与权威真相来源。
+* 章节写作必须是流水线：计划（Plan）→前置校验（Validate）→生成（Write）→事后抽取（Extract）→事后校验（Validate）→提交状态（Commit）→再写入记忆（Memory Update）。当前你的 README 流程是“生成后直接更新记忆”，需要插入校验与状态提交。([GitHub][1])
+* 并行写作只能并行“非提交阶段”：状态提交必须按章节号顺序串行（像数据库事务）。
+
+---
+
+二、改造任务总览（按优先级）
+P0（立即做，必须完成）：把“状态”做成一等公民 + 写作前后双校验闭环
+P1（必须完成）：仓库等系统功能做成“能力开关（capability gating）”规则
+P2（必须完成）：并行批量写作改成“并行生成、串行提交状态”，或主线默认禁并行
+P3（建议完成）：一致性检查（consistency-checker）从“只报错”升级为“可修复闭环”
+P4（建议完成）：修正 SimpleMem 抽取/压缩 prompt：保留否定/条件/证据句
+P5（建议完成）：加“回放/重建状态”的迁移脚本与回归测试
+
+---
+
+三、具体任务拆解（Opus 逐条实现）
+以下按你项目结构来指派文件位置。README 里明确存在 `projects/western-fantasy/auto_write.py`、`story_memory_adapter.py`、`worldbook/`、以及 `skills/consistency-checker/` 等目录。([GitHub][1])
+
+========================
+任务 1：新增“硬状态库（State Store）”与“硬设定（Invariants）”
+============================================
+
+目的：把“仓库可用/不可用、能力是否解锁、重要道具归属”等硬约束从“检索命中”中剥离出来，成为每章写作必注入的权威上下文。
+
+1.1 新增文件（建议路径）
+
+* `projects/western-fantasy/worldbook/invariants.yaml`
+  放“原则上不应被章节悄悄改变”的硬规则（例如：系统仓库默认不可打开，除非触发某条件）。
+* `projects/western-fantasy/worldbook/system_state.yaml`
+  放“系统功能开关”的当前状态（仓库/商城/任务面板/背包等）。
+* `projects/western-fantasy/state/state_events.jsonl`
+  状态事件日志（每章提交一次，append-only）。
+* `projects/western-fantasy/state/state_snapshot.json`
+  当前快照（加速读取，启动时可由 events 回放重建）。
+
+1.2 YAML 示例（仓库问题的最小可用版）
+`system_state.yaml`（初始化即可）
+
+```yaml
+system:
+  warehouse:
+    accessible: false
+    unlocked_by: null
+    last_update_chapter: 0
+    evidence: "初始：系统仓库不可打开"
+    strict: true
+```
+
+`invariants.yaml`（定义“不得悄悄改变”）
+
+```yaml
+invariants:
+  - id: system.warehouse.strict_access
+    description: "仓库功能在 accessible=false 时不得出现成功访问/取物/存物/查看库存等行为"
+    scope_keywords: ["仓库", "系统仓库", "库存", "取出", "存入", "打开仓库", "仓库界面"]
+    severity: "error"
+```
+
+1.3 状态数据结构（Opus 在代码里实现）
+建议统一成下面这种结构（JSON 内部格式，YAML 只是人类可读的入口）：
+
+* `path`：例如 `system.warehouse.accessible`
+* `value`：bool/int/str
+* `valid_from`：起始章节号
+* `valid_to`：结束章节号（可为空表示仍有效）
+* `evidence`：证据句（来自章节原文）
+* `source_chapter`：来源章节号
+* `strict`：是否硬约束
+
+========================
+任务 2：实现/强化 StoryStateManager（权威状态源）
+===================================
+
+目的：提供“读取状态快照、校验计划、从章节抽取状态更新、提交状态事件、生成状态差异报告”的统一 API。
+
+2.1 文件位置
+
+* 如果仓库里已经有 `StoryStateManager`：在其原文件上改。README 里把它作为核心组件之一。([GitHub][1])
+* 如果没有实现（或仅 stub）：新增 `projects/western-fantasy/story_state_manager.py`，并在 `auto_write.py` 中引入。
+
+2.2 必须提供的核心接口（函数签名可调整，但能力必须齐）
+(1) `load()`
+
+* 读取 `state_snapshot.json`；若不存在，则从 `state_events.jsonl` 回放重建；再读取 `system_state.yaml` 叠加/覆盖默认值。
+
+(2) `get_snapshot(chapter_num: int, topic_keywords: list[str] | None) -> dict`
+
+* 返回“写第 chapter_num 章之前”的状态快照。
+* 必须支持“按关键词裁剪”：如果 topic_keywords 命中 `scope_keywords`，则把相关 state 强制加入 prompt。
+
+(3) `validate_plan(plan: dict, snapshot: dict) -> list[Issue]`
+
+* 规则：计划里出现“访问仓库/取物/存物/查看库存”等动作时，若 `system.warehouse.accessible == false`，返回 error。
+* 规则：计划声明要把 `accessible false→true`，必须在 plan 里包含“解锁事件/触发条件”的描述（否则 error）。
+
+(4) `extract_state_updates(chapter_text: str, chapter_num: int) -> dict`
+
+* 从章节正文抽取“状态更新事件”。这里可以用 LLM，也可以规则+LLM混合。必须输出：
+
+  * 哪些 state 改变了（path、new value）
+  * 证据句（原文一句或两句）
+  * 改变原因（如果能抽到）
+
+(5) `validate_chapter(chapter_text: str, snapshot: dict) -> list[Issue]`
+
+* 做正文级别校验：哪怕 plan 通过了，正文也可能跑偏，所以必须二次检查。
+* 最小版本用关键词触发即可（仓库相关词+成功动词），后续再升级到更细粒度。
+
+(6) `commit(chapter_num: int, updates: dict, issues: list[Issue]) -> None`
+
+* 把本章状态变更写入 `state_events.jsonl`
+* 更新 `state_snapshot.json`
+* 保存一份 `state_diff`（可选）用于调试/报告
+
+2.3 Issue 结构（建议）
+
+```json
+{
+  "severity": "error|warn",
+  "rule_id": "system.warehouse.strict_access",
+  "message": "...",
+  "evidence_new": "...",   // 新章触发句
+  "evidence_old": "...",   // 旧章/状态证据句（若有）
+  "suggestions": [
+    {"type": "add_unlock_event", "hint": "..."},
+    {"type": "rewrite_to_fail_access", "hint": "..."},
+    {"type": "remove_warehouse_action", "hint": "..."}
+  ]
+}
+```
+
+========================
+任务 3：改造 AutoWrite：引入“计划→校验→生成→抽取→校验→提交→写入记忆”闭环
+==============================================
+
+目的：把矛盾拦在“写入记忆库之前”，并且让模型在写作前就看到权威状态。
+
+你的 README 展示的现有流程是：AutoWrite→MemoryAdapter→SimpleMem 检索→DeepSeek 生成→更新记忆。需要在生成前后插入 StateManager 与校验。([GitHub][1])
+
+3.1 修改文件
+
+* `projects/western-fantasy/auto_write.py`（README 明确存在）([GitHub][1])
+
+3.2 新的单章主流程（伪代码，Opus 直接照这个改）
+
+```python
+def write_single_chapter(chapter_num):
+    snapshot = state_manager.get_snapshot(chapter_num, topic_keywords)
+
+    memory_context = memory_adapter.get_writing_context(
+        chapter_num=chapter_num,
+        topics=topic_keywords
+    )
+
+    plan = llm_generate_plan(outline, snapshot, memory_context)  # 输出 JSON
+
+    issues = state_manager.validate_plan(plan, snapshot)
+    if has_error(issues):
+        plan = llm_fix_plan(plan, issues, snapshot)  # 或直接打回重做
+        issues = state_manager.validate_plan(plan, snapshot)
+        if has_error(issues):
+            return fail_report(chapter_num, issues)
+
+    draft = llm_write_chapter(plan, snapshot, memory_context)
+
+    post_issues = state_manager.validate_chapter(draft, snapshot)
+    if has_error(post_issues):
+        draft = llm_repair_chapter(draft, post_issues, snapshot, plan)
+        post_issues = state_manager.validate_chapter(draft, snapshot)
+        if has_error(post_issues):
+            return fail_report(chapter_num, post_issues)
+
+    updates = state_manager.extract_state_updates(draft, chapter_num)
+    state_manager.commit(chapter_num, updates, issues + post_issues)
+
+    # 注意：必须在 state commit 之后再写入 memory
+    memory_adapter.add_chapter(chapter_num, content=draft, title=plan.get("title"))
+    return success_report(...)
+```
+
+3.3 关键点：Prompt 注入（必须做）
+在 `llm_generate_plan` 与 `llm_write_chapter` 的 system/user prompt 里加两个固定段落：
+
+* “硬状态快照（必须遵守）”：把 snapshot 以 YAML/JSON 形式贴进去（尤其是 system.warehouse.accessible）。
+* “硬规则（不得违反）”：把 invariants 的相关条目贴进去（命中关键词则贴）。
+
+3.4 计划（Plan）输出格式（建议）
+要求 LLM 输出严格 JSON（便于校验），示例：
+
+```json
+{
+  "chapter_num": 12,
+  "title": "…",
+  "actions": [
+    {
+      "type": "warehouse_withdraw",
+      "actor": "艾伦",
+      "requires": [
+        {"path": "system.warehouse.accessible", "equals": true}
+      ],
+      "effects": [
+        {"path": "items.iron_sword.owner", "value": "艾伦"}
+      ],
+      "notes": "如果仓库未解锁，本章不得出现取物成功"
+    }
+  ],
+  "state_changes": [
+    {
+      "path": "system.warehouse.accessible",
+      "from": false,
+      "to": true,
+      "cause_event": "完成新手任务，系统提示解锁仓库功能"
+    }
+  ]
+}
+```
+
+========================
+任务 4：仓库问题“专门规则”落地（Capability Gating）
+====================================
+
+目的：先把你最痛的点用确定性规则彻底堵住，而不是完全依赖模型自觉。
+
+4.1 在 StateManager 内置一个“仓库动作识别器”
+最小可用：关键词 + 成功动词/结果词。
+
+* 触发关键词（命中即可进入“疑似仓库访问”）：
+  `["仓库","系统仓库","库存","物品栏","储物","存入","取出","打开仓库","仓库界面"]`
+* 成功信号（命中则判定“成功访问/成功取物”）：
+  `["成功","终于","顺利","弹出界面","列表","显示","取出了","拿出","收入","放入","存入成功"]`
+* 失败信号（命中则判定“未成功”，可放行但要记录）：
+  `["打不开","无法打开","没有反应","提示权限不足","失败","被拒绝"]`
+
+判定逻辑（建议）：
+
+* 若命中触发关键词 + 成功信号，且 snapshot 中 `accessible=false` → error
+* 若命中触发关键词 + 失败信号 → ok（但可 warn：提示“仓库仍不可用”应写成明确句）
+
+4.2 自动修复策略（必须至少实现一种）
+当检测到 error（仓库不可用但正文成功取物）时，`llm_repair_chapter` 提供两条可选修复路线，让模型选择其一并最小改写：
+A) “改写为失败”：把成功取物改成“尝试打开失败/权限不足”，并调整后续因果（删除取物收益）。
+B) “补解锁桥段”：在第一次成功访问仓库之前插入 2~5 句“解锁/升级/任务完成/获得钥匙”的桥段，同时在本章末尾或同段加入系统提示句，保证因果闭合，并输出 state_changes：`accessible=true`。
+
+要求修复 prompt 明确“尽量少改动原文，只修矛盾段落，不重写整章”。
+
+========================
+任务 5：并行批量写作改造（并行生成，串行提交）
+========================
+
+目的：避免并行写章导致 state 快照错位（这会直接制造你说的“前章说不能，后章却能”的矛盾）。你 README 明确支持顺序/并行批量处理与 ThreadPoolExecutor 示例。([GitHub][1])
+
+5.1 新增配置项（`projects/western-fantasy/config.yaml`）
+README 里有这个配置文件路径。([GitHub][1])
+建议加：
+
+```yaml
+writing:
+  strict_state: true
+  parallel_mode: "sequential_commit"  # off | sequential_commit | full_parallel
+  max_workers: 3
+```
+
+5.2 行为定义
+
+* strict_state=true 时：
+
+  * `full_parallel` 禁止（或强制降级为 sequential_commit）
+  * 允许并行做：记忆检索、计划生成（可选）、草稿生成（可选）
+  * 但“state commit + memory add_chapter”必须按章节号加锁串行
+
+5.3 实现方式（任选其一，推荐“锁 + 队列”）
+方案 A（最简单稳）：章节生成也串行（主线默认）
+
+* 对网络连载最稳，但速度慢。
+
+方案 B（推荐）：并行产出草稿，但提交阶段串行
+
+* 每个 worker 生成 draft 后，把结果放入一个 `dict[chapter_num]=draft`
+* 主线程按章节号从小到大：
+
+  * 读取 draft
+  * 用“上一章提交后的快照”做 post-validate 与 extract+commit
+  * 再 add_chapter 写入记忆库
+    这样可以保证任何章节在提交时看到的是“真实最新 state”。
+
+方案 C：文件锁（跨进程/多机也能用）
+
+* 在 `state_snapshot.json` 上加文件锁（portalocker 或 fcntl），提交时加锁。
+
+========================
+任务 6：升级 consistency-checker：从“报错”到“闭环修复指令”
+==========================================
+
+目的：让一致性工具输出结构化的“可执行修复建议”，并能被 AutoWrite 自动调用修复。
+
+6.1 目录位置
+README 标出 `skills/consistency-checker/`。([GitHub][1])
+
+6.2 输出格式要求（必须结构化）
+consistency-checker 接收：
+
+* snapshot（硬状态）
+* plan
+* draft
+  输出：
+* issues（同 StoryStateManager Issue 结构）
+* repairs（给 `llm_repair_chapter` 的“修复指令包”）
+
+6.3 接入点
+AutoWrite 在 post-validate 后，如果发现 error：
+
+* 先走 StateManager 的快速规则
+* 再调用 consistency-checker 生成更丰富的 repairs
+* 再喂给 `llm_repair_chapter`
+
+========================
+任务 7：修正 SimpleMem 抽取/压缩：强制保留“否定、条件、证据句”
+=======================================
+
+目的：避免“仓库不能打开”被摘要器压成“存在仓库”这种信息丢失，从根上减少漂移。你的 README 提到 SimpleMem 使用“三阶段语义压缩流程”。([GitHub][1])
+
+7.1 Opus 在 SimpleMem 内部要做的事情（按关键词搜索定位）
+在 SimpleMem 的抽取/压缩 prompt 中加入硬要求：
+
+* 必须保留否定词：不能/无法/不可/尚未/禁止/没有权限
+* 必须保留条件句：直到…才…、除非…否则…
+* 每条原子事实必须带 evidence（原文证据句）
+* 区分“事实”与“角色观点/误解/传闻”（后者不要写入硬状态，只能作为软记忆）
+
+7.2 输出增强（建议）
+记忆条目增加字段：
+
+* `polarity: positive|negative`
+* `fact_type: hard_state|event|belief|rumor`
+* `valid_from_chapter`, `valid_to_chapter`
+
+然后 StoryMemoryAdapter 检索时优先把 `hard_state` 交给 StateManager，而不是直接拼进上下文当“可讨论内容”。
+
+========================
+任务 8：迁移与回放工具（处理你已有的旧章节矛盾）
+=========================
+
+目的：你现在库里（或你本地）已经生成了一批章节，里面可能混入了矛盾；需要一键扫描并生成修复建议，否则越写越乱。
+
+8.1 新增脚本（建议放在 `projects/western-fantasy/tools/`）
+
+* `rebuild_state.py`
+
+  * 输入：章节文件目录（例如 `chapters/001.txt ...`，具体路径 Opus 按你现有输出目录适配）
+  * 行为：按章节号排序，逐章 extract_state_updates → commit
+  * 输出：`state_events.jsonl`、`state_snapshot.json`、`consistency_report.json`
+
+* `scan_contradictions.py`
+
+  * 行为：用 invariants + 当前 state 规则扫描每章正文，输出矛盾列表与证据句
+
+8.2 对“仓库矛盾”的批量修复策略（建议）
+
+* 如果矛盾章不影响主线：自动改写为“尝试失败”
+* 如果矛盾章必须取物：自动在矛盾章前插入“解锁桥段”，并在 state_events 中记录解锁发生章节
+
+========================
+任务 9：回归测试与验收标准（必须给）
+===================
+
+目的：确保这次改造不是“看起来更复杂”，而是真的能挡住你提的矛盾。
+
+9.1 最小回归用例（仓库）
+准备两段短文本作为章节输入（可直接写在测试里）：
+
+* 第 1 章包含句子：“系统仓库无法打开/权限不足”
+* 第 2 章故意让模型写“从仓库取出物品”
+
+期望结果：
+
+* strict_state=true 时，第 2 章必须被拦截并触发自动修复：
+
+  * 要么改成“取物失败”
+  * 要么补“解锁桥段 + state accessible=true”
+* 且最终写入 memory 的版本不得含硬矛盾句。
+
+9.2 验收输出（每章都要产生）
+
+* `chapter_text`
+* `plan.json`
+* `state_diff.json`（本章前后状态差）
+* `issues.json`（若发生修复，要记录修复前后 issue）
+
+---
+
+四、交付形态（Opus 最终要给你的东西）
+
+1. 代码改动
+
+* StoryStateManager（新增或强化）
+* auto_write.py 流程改造（加入 plan/validate/extract/commit）
+* worldbook 增加 invariants.yaml + system_state.yaml
+* skills/consistency-checker 输出结构化修复指令并接入 AutoWrite
+* 并行模式改造（sequential_commit 或 strict 降级）
+* 两个工具脚本（rebuild_state / scan_contradictions）
+* 最小回归测试
+
+2. 文档改动（顺手修）
+
+* README 的克隆命令目前是占位写法（YOUR_USERNAME/novel-writing-system），建议同步改成真实仓库地址，避免误导。([GitHub][1])
+* 在“并行批量写作”章节明确提示：strict_state=true 时主线不建议 full_parallel，并说明原因与替代模式（sequential_commit）。([GitHub][1])
+
+---
+
+五、运行方式（你之后怎么用/怎么处理异常）
+
+1. 日常写作建议配置
+
+* 主线连载：`strict_state=true` + `parallel_mode=sequential_commit`（或完全顺序）
+* 番外/独立章节：可放开并行，但仍建议 commit 串行
+
+2. 出现矛盾时的系统行为（必须固定）
+
+* 任何 error：不得直接写入章节到记忆库
+* 必须先自动修复一次；修复失败则输出 fail_report（含证据句与建议），让你人工介入
+
+3. 你要做的“人工介入”最小动作
+
+* 只改 worldbook/system_state.yaml 或新增一个“解锁事件”到大纲/本章开头，然后重跑该章
+* 不要手动去改 SimpleMem 的向量库内容；让 rebuild_state 从文本回放重建更可靠
+
+---
+
+六、你关心的“仓库前后矛盾”会如何被彻底消灭（机制总结）
+
+* 写作前：snapshot 明确写 `accessible=false`，并作为“硬状态”注入 prompt（模型提前知道不能开）
+* 计划阶段：只要 plan 里出现“取物/打开仓库成功”，validate_plan 直接拦截
+* 写作后：就算模型跑偏写出“取物成功”，validate_chapter 也会抓住并强制 repair
+* 提交顺序：commit 按章节号串行，杜绝并行写作导致的状态错位
+
