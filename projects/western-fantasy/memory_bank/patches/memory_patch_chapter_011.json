@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 11 established: 晨雾如纱，笼罩着诺斯家族位于城镇边缘的宅邸 / 天光未大亮，东方的天空只透出一线鱼肚白",
+      "evidence": {
+        "quote": "晨雾如纱，笼罩着诺斯家族位于城镇边缘的宅邸 / 天光未大亮，东方的天空只透出一线鱼肚白",
+        "chapter_pos": "chapter_011"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 11",
+      "evidence": {
+        "quote": "晨雾如纱，笼罩着诺斯家族位于城镇边缘的宅邸 / 天光未大亮，东方的天空只透出一线鱼肚白",
+        "chapter_pos": "chapter_011"
+      }
+    }
+  ]
+}

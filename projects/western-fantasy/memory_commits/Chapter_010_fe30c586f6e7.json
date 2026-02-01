@@ -1,0 +1,39 @@
+{
+  "chapter": 10,
+  "hash": "fe30c586f6e7",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "possess_item",
+        "value": "优质冬小麦种子一袋（白色品质）",
+        "hard": true,
+        "reason": "使用星尘进行系统抽奖获得"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "possess_item",
+        "value": "简易砂石净水装置图纸（绿色品质）",
+        "hard": true,
+        "reason": "使用星尘进行系统抽奖获得"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "star_dust",
+        "value": 530,
+        "hard": true,
+        "reason": "原550点，进行两次抽奖消耗40点，完成日常任务‘为旅程准备’获得20点，净变化-20点"
+      },
+      {
+        "subject": "world",
+        "predicate": "current_mission_progress",
+        "value": "准备出发，已获得塞巴斯追随及50金币启动资金，采购基础物资完成，三日后启程",
+        "hard": false,
+        "reason": "剧情进展描述"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

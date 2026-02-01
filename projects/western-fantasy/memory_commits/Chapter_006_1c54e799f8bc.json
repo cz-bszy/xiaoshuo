@@ -1,0 +1,14 @@
+{
+  "chapter": 6,
+  "hash": "1c54e799f8bc",
+  "replaced": null,
+  "state_diff": {
+    "state_diff": {
+      "updated": {
+        "system.warehouse.accessible": false,
+        "current_chapter": "Chapter 6"
+      }
+    }
+  },
+  "active": true
+}

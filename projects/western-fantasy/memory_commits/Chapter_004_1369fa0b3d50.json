@@ -1,0 +1,25 @@
+{
+  "chapter": 4,
+  "hash": "1369fa0b3d50",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "system.aware",
+        "value": true,
+        "hard": true,
+        "reason": "第四章剧情，星辰系统于深夜觉醒并完成初步交互"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "possess_item",
+        "value": "基础源素感知与引导手册（知识）",
+        "hard": true,
+        "reason": "完成新手任务后抽奖获得白色品质知识类奖励"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

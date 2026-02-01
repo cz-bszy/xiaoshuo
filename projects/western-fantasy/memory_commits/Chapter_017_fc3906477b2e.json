@@ -1,0 +1,42 @@
+{
+  "chapter": 17,
+  "hash": "fc3906477b2e",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "star_dust",
+        "value": 650,
+        "hard": true,
+        "reason": "完成【成长任务：血的教训】获得150星尘（原500+150=650）"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "possess_item",
+        "value": [
+          "简易砂石净水装置图纸（绿色品质）",
+          "绿色抽奖券×1"
+        ],
+        "hard": true,
+        "reason": "完成【成长任务：血的教训】获得绿色抽奖券×1"
+      },
+      {
+        "subject": "world",
+        "predicate": "current_situation",
+        "value": "队伍于荒野休整，已进行临时护卫队整编与基础训练安排，士气初步凝聚，但存在重伤员（马丁等）生命垂危的隐患，且需警惕可能存在的风狼群。",
+        "hard": false,
+        "reason": "第17章剧情发展结果"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "leadership_development",
+        "value": "经历了首次生死考验与道德抉择（拒绝抛弃伤员），做出关键决策并初步建立队伍秩序，获得格雷的初步认可及部分流民的信任。",
+        "hard": false,
+        "reason": "第17章主角成长体现"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

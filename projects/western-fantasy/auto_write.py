@@ -572,6 +572,26 @@ def save_artifacts(chapter: int, plan: Dict[str, Any], issues: List[Dict[str, An
         json.dump(issues, f, ensure_ascii=False, indent=2)
 
 
+def save_fail_report(
+    chapter: int,
+    issues: List[Dict[str, Any]],
+    plan: Optional[Dict[str, Any]] = None,
+    draft: Optional[str] = None,
+):
+    report_dir = PROJECT_PATH / "state" / "reports"
+    report_dir.mkdir(parents=True, exist_ok=True)
+
+    payload = {
+        "chapter": chapter,
+        "issues": issues,
+        "plan": plan or {},
+        "draft_excerpt": draft[:2000] if draft else "",
+    }
+    fail_path = report_dir / f"fail_c{chapter:03d}.json"
+    with open(fail_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+
 
 def generate_draft_payload(
     chapter: int,
@@ -591,8 +611,10 @@ def generate_draft_payload(
     snapshot = state_manager.get_snapshot(chapter, topic_keywords=topics)
     invariants_text = StoryStateManager.format_invariants_for_prompt(snapshot.get("invariants", []))
 
-    local_memory_adapter = memory_adapter or StoryMemoryAdapter(clear_db=False)
-    memory_context = local_memory_adapter.get_writing_context(chapter, topics=topics)
+    if memory_adapter is None:
+        memory_context = ""
+    else:
+        memory_context = memory_adapter.get_writing_context(chapter, topics=topics)
 
     plan = llm_generate_plan(chapter, title, outline, snapshot, invariants_text, memory_context)
     issues = state_manager.validate_plan(plan, snapshot)
@@ -643,6 +665,7 @@ def commit_chapter_payload(
         plan = llm_fix_plan(plan, plan_issues, snapshot)
         plan_issues = state_manager.validate_plan(plan, snapshot)
         if _has_error(plan_issues):
+            save_fail_report(chapter, plan_issues, plan=plan)
             return {"chapter": chapter, "status": "failed", "issues": plan_issues}
 
     post_issues = state_manager.validate_chapter(draft, snapshot)
@@ -652,6 +675,7 @@ def commit_chapter_payload(
         draft = llm_repair_chapter(draft, plan, snapshot, post_issues, repairs)
         post_issues = state_manager.validate_chapter(draft, snapshot)
         if _has_error(post_issues):
+            save_fail_report(chapter, post_issues, plan=plan, draft=draft)
             return {"chapter": chapter, "status": "failed", "issues": post_issues}
 
     all_issues = plan_issues + post_issues
@@ -662,7 +686,8 @@ def commit_chapter_payload(
 
     quality = check_quality(draft, chapter)
     save_chapter(volume, chapter, title, draft)
-    memory_adapter.add_chapter(chapter_num=chapter, content=draft, title=title)
+    if memory_adapter is not None:
+        memory_adapter.add_chapter(chapter_num=chapter, content=draft, title=title)
 
     return {
         "chapter": chapter,
@@ -679,14 +704,64 @@ def run_auto_write(start_chapter: int = 2, end_chapter: int = 30):
     print(f"🚀 开始自动写作：第{start_chapter}章 到 第{end_chapter}章")
     print("=" * 60)
 
+    pipeline_cfg = CONFIG.get("pipeline", {}) or {}
+    if pipeline_cfg.get("enabled", False):
+        from chapter_pipeline import ChapterPipeline
+
+        pipeline = ChapterPipeline(PROJECT_PATH)
+        stats = {"success": 0, "failed": 0, "issues": []}
+        total_words = 0
+
+        for chapter in range(start_chapter, end_chapter + 1):
+            try:
+                ok = pipeline.run(chapter)
+                if ok:
+                    stats["success"] += 1
+                    final_path = (
+                        PROJECT_PATH
+                        / "pipeline"
+                        / "chapters"
+                        / f"c{chapter:03d}"
+                        / "final.txt"
+                    )
+                    if final_path.exists():
+                        total_words += len(final_path.read_text(encoding="utf-8").strip())
+                else:
+                    stats["failed"] += 1
+                    stats["issues"].append(f"第{chapter}章：评审未通过")
+            except Exception as e:
+                stats["failed"] += 1
+                stats["issues"].append(f"第{chapter}章：{str(e)}")
+
+            if chapter % 5 == 0:
+                print(f"\n{'=' * 40}")
+                print(f"📊 进度报告：已完成 {chapter}/{end_chapter} 章")
+                print(f"   总字数（估算字符）：{total_words:,}")
+                print(f"{'=' * 40}\n")
+
+        print("\n" + "=" * 60)
+        print("📊 自动写作完成报告")
+        print("=" * 60)
+        print(f"  成功：{stats['success']} 章")
+        print(f"  失败：{stats['failed']} 章")
+        print(f"  总字数（估算字符）：{total_words:,}")
+
+        if stats["issues"]:
+            print("\n⚠️ 问题列表：")
+            for issue in stats["issues"]:
+                print(f"  - {issue}")
+
+        return stats
+
     volume = 1
     total_words = 0
     stats = {"success": 0, "failed": 0, "issues": []}
 
     state_manager = StoryStateManager(project_path=PROJECT_PATH)
-    memory_adapter = StoryMemoryAdapter(clear_db=False)
-
     writing_config = CONFIG.get("writing", {})
+    use_memory = writing_config.get("use_memory", True)
+    memory_adapter = StoryMemoryAdapter(clear_db=False) if use_memory else None
+
     strict_state = writing_config.get("strict_state", True)
     parallel_mode = writing_config.get("parallel_mode", "sequential_commit")
     max_workers = int(writing_config.get("max_workers", 1))

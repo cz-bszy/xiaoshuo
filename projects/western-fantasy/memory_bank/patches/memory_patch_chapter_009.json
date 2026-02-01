@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 9 established: 晨光透过彩色玻璃窗，将斑驳的光影投在诺斯家族书房厚重的橡木桌面上 / 艾伦·诺斯——或者说，灵魂深处那个名叫林远的规划师——正坐在高背椅上，面前摊开一张略显粗糙的羊皮纸",
+      "evidence": {
+        "quote": "晨光透过彩色玻璃窗，将斑驳的光影投在诺斯家族书房厚重的橡木桌面上 / 艾伦·诺斯——或者说，灵魂深处那个名叫林远的规划师——正坐在高背椅上，面前摊开一张略显粗糙的羊皮纸",
+        "chapter_pos": "chapter_009"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 9",
+      "evidence": {
+        "quote": "晨光透过彩色玻璃窗，将斑驳的光影投在诺斯家族书房厚重的橡木桌面上 / 艾伦·诺斯——或者说，灵魂深处那个名叫林远的规划师——正坐在高背椅上，面前摊开一张略显粗糙的羊皮纸",
+        "chapter_pos": "chapter_009"
+      }
+    }
+  ]
+}

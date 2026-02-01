@@ -1,0 +1,32 @@
+{
+  "chapter": 5,
+  "plot_lines": [
+    {
+      "id": "system_awaken",
+      "name": "星辰系统觉醒",
+      "status": "active",
+      "last_update": "v01c005",
+      "notes": [
+        "系统觉醒与首次抽奖完成"
+      ]
+    },
+    {
+      "id": "norse_family_decline",
+      "name": "诺斯家族衰落与边缘人处境",
+      "status": "active",
+      "last_update": "v01c003",
+      "notes": [
+        "家族困境与主角边缘身份已建立"
+      ]
+    },
+    {
+      "id": "territory_move",
+      "name": "前往诺斯领的决定",
+      "status": "pending",
+      "last_update": "v01c003",
+      "notes": [
+        "需在第9-10章做出抉择"
+      ]
+    }
+  ]
+}

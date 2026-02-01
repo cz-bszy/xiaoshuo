@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 10 established: 晨光透过彩色玻璃窗，将斑驳的光影投在厚重的橡木书桌上 / 艾伦·诺斯坐在祖父曾使用过的书桌前，羊皮地图摊开，羽毛笔搁在一旁，墨迹已干",
+      "evidence": {
+        "quote": "晨光透过彩色玻璃窗，将斑驳的光影投在厚重的橡木书桌上 / 艾伦·诺斯坐在祖父曾使用过的书桌前，羊皮地图摊开，羽毛笔搁在一旁，墨迹已干",
+        "chapter_pos": "chapter_010"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 10",
+      "evidence": {
+        "quote": "晨光透过彩色玻璃窗，将斑驳的光影投在厚重的橡木书桌上 / 艾伦·诺斯坐在祖父曾使用过的书桌前，羊皮地图摊开，羽毛笔搁在一旁，墨迹已干",
+        "chapter_pos": "chapter_010"
+      }
+    }
+  ]
+}

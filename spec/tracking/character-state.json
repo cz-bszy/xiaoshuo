@@ -1,0 +1,37 @@
+{
+  "chapter": 5,
+  "characters": {
+    "main_001": {
+      "id": "main_001",
+      "canonical_name": "艾伦·诺斯",
+      "aliases": [
+        "艾伦",
+        "林远"
+      ],
+      "status": {
+        "realm": "无",
+        "location": "诺斯本家宅邸",
+        "health": "正常",
+        "system": "星辰系统已觉醒",
+        "inventory_unlocked": false
+      },
+      "notes": [
+        "完成首次任务获得星尘",
+        "完成首次抽奖获得《基础源素感知与引导手册（通用版）》"
+      ]
+    },
+    "side_001": {
+      "id": "side_001",
+      "canonical_name": "塞巴斯·格兰特",
+      "aliases": [
+        "塞巴斯",
+        "老管家"
+      ],
+      "status": {
+        "realm": "初潮者",
+        "location": "诺斯本家宅邸",
+        "relationship_to_main": "忠诚管家"
+      }
+    }
+  }
+}

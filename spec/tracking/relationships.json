@@ -1,0 +1,12 @@
+{
+  "chapter": 5,
+  "relationships": [
+    {
+      "from": "艾伦·诺斯",
+      "to": "塞巴斯·格兰特",
+      "type": "主仆/协助",
+      "status": "信任与依赖建立中",
+      "since": "v01c002"
+    }
+  ]
+}

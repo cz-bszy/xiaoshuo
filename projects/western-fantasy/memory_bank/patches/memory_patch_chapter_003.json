@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 3 established: 清晨的光线透过高窗，切割着诺斯家族餐厅内沉闷的空气 / 长条橡木桌光可鉴人，却映不出多少暖意",
+      "evidence": {
+        "quote": "清晨的光线透过高窗，切割着诺斯家族餐厅内沉闷的空气 / 长条橡木桌光可鉴人，却映不出多少暖意",
+        "chapter_pos": "chapter_003"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 3",
+      "evidence": {
+        "quote": "清晨的光线透过高窗，切割着诺斯家族餐厅内沉闷的空气 / 长条橡木桌光可鉴人，却映不出多少暖意",
+        "chapter_pos": "chapter_003"
+      }
+    }
+  ]
+}

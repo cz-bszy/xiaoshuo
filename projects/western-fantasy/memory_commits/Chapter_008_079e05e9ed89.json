@@ -1,0 +1,39 @@
+{
+  "chapter": 8,
+  "hash": "079e05e9ed89",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "possess_item",
+        "value": "罗兰德·诺斯的观测笔记（知识/物品）",
+        "hard": true,
+        "reason": "在家族藏书室发现并带走祖父遗留的笔记"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "star_dust",
+        "value": 50,
+        "hard": true,
+        "reason": "完成‘了解世界（1/3）’成长任务获得奖励"
+      },
+      {
+        "subject": "world",
+        "predicate": "southern_border_situation",
+        "value": "politically_isolated_resource_scarce",
+        "hard": true,
+        "reason": "通过塞巴斯讲解和资料查阅，确认诺斯领当前政治孤立、资源匮乏、被王室和邻近贵族忽视的严峻现状"
+      },
+      {
+        "subject": "world",
+        "predicate": "black_forest_threat_level",
+        "value": "rising_with_cycle_anomaly",
+        "hard": true,
+        "reason": "根据祖父笔记记载，黑森林源素浓度异常上升，魔兽活动加剧，传统约三十年的兽潮周期可能已被打破，威胁迫近"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

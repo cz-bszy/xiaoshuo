@@ -1,0 +1,16 @@
+{
+  "chapter": 1,
+  "hash": "6f0ff659af11",
+  "replaced": null,
+  "state_diff": {
+    "facts": [],
+    "rename_events": [
+      {
+        "canonical_name": "艾伦·诺斯",
+        "new_name": "林远",
+        "reason": "穿越者前世身份，在主角内心活动中揭示，作为对自我认知的过渡。对外及叙事主体仍使用艾伦·诺斯。"
+      }
+    ]
+  },
+  "active": true
+}

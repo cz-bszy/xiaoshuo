@@ -1,0 +1,39 @@
+{
+  "chapter": 5,
+  "hash": "b07464b67847",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "掌握知识/技能",
+        "value": "《源素基础导引与内循环初解》（白色品质）",
+        "hard": false,
+        "reason": "通过首次系统抽奖获得。"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "境界",
+        "value": "感知者（初入）",
+        "hard": false,
+        "reason": "成功按照功法引导，初次感知到源素存在。"
+      },
+      {
+        "subject": "星辰系统",
+        "predicate": "已揭示规则",
+        "value": "抽奖机制（消耗、品质、每日限制、保底）、任务触发与完成模式",
+        "hard": false,
+        "reason": "主角通过完成日常任务、成长任务及进行首次抽奖，总结了系统的基础运作方式。"
+      },
+      {
+        "subject": "世界观/力量体系",
+        "predicate": "已揭示信息",
+        "value": "源素概念、驭素与魔法的区别、六大境界前三个名称（感知者、凝聚者、外显者）、亲和类型概念",
+        "hard": false,
+        "reason": "通过研读《源素基础导引与内循环初解》获得。"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 8 established: 清晨的阳光透过彩色玻璃窗，在书房厚重的橡木地板上投下斑驳光影 / 艾伦·诺斯站在巨大的桃花心木书桌前，看着老管家塞巴斯缓缓展开一卷泛黄的羊皮纸",
+      "evidence": {
+        "quote": "清晨的阳光透过彩色玻璃窗，在书房厚重的橡木地板上投下斑驳光影 / 艾伦·诺斯站在巨大的桃花心木书桌前，看着老管家塞巴斯缓缓展开一卷泛黄的羊皮纸",
+        "chapter_pos": "chapter_008"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 8",
+      "evidence": {
+        "quote": "清晨的阳光透过彩色玻璃窗，在书房厚重的橡木地板上投下斑驳光影 / 艾伦·诺斯站在巨大的桃花心木书桌前，看着老管家塞巴斯缓缓展开一卷泛黄的羊皮纸",
+        "chapter_pos": "chapter_008"
+      }
+    }
+  ]
+}

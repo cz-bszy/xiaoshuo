@@ -22,15 +22,21 @@ except Exception:  # pragma: no cover - optional dependency
 
 
 WAREHOUSE_KEYWORDS = [
-    "仓库",
     "系统仓库",
+    "仓库界面",
     "库存",
     "物品栏",
     "储物",
     "存入",
     "取出",
     "打开仓库",
-    "仓库界面",
+    "仓库",
+]
+WAREHOUSE_EXCLUDE = [
+    "家族仓库",
+    "粮仓",
+    "仓库钥匙",
+    "仓库账目",
 ]
 WAREHOUSE_SUCCESS = [
     "成功",
@@ -50,6 +56,9 @@ WAREHOUSE_FAILURE = [
     "无法打开",
     "没有反应",
     "提示权限不足",
+    "权限不足",
+    "未解锁",
+    "未开启",
     "失败",
     "被拒绝",
 ]
@@ -109,6 +118,9 @@ def _first_sentence_with_keywords(text: str, keywords: List[str]) -> Optional[st
 
 
 def _detect_warehouse_signals(text: str) -> Dict[str, Any]:
+    if any(k in text for k in WAREHOUSE_EXCLUDE):
+        return {"trigger": False, "success": False, "failure": False, "unlock": False, "evidence": None}
+
     trigger = any(k in text for k in WAREHOUSE_KEYWORDS)
     if not trigger:
         return {"trigger": False, "success": False, "failure": False, "unlock": False, "evidence": None}
@@ -137,13 +149,6 @@ def _detect_warehouse_signals(text: str) -> Dict[str, Any]:
             unlock = True
             if evidence is None:
                 evidence = sentence
-
-    if not success:
-        success = any(k in text for k in WAREHOUSE_SUCCESS)
-    if not failure:
-        failure = any(k in text for k in WAREHOUSE_FAILURE)
-    if not unlock:
-        unlock = any(k in text for k in WAREHOUSE_UNLOCK)
 
     return {
         "trigger": True,
@@ -447,17 +452,29 @@ class StoryStateManager:
             .get("warehouse", {})
             .get("accessible", False)
         )
+        entry_old = self._get_entry_from_snapshot(snapshot, "system.warehouse.accessible")
 
         plan_has_warehouse = self._plan_has_warehouse_action(plan)
         plan_unlocks = self._plan_unlocks_warehouse(plan)
+        plan_failure = self._plan_has_warehouse_failure(plan)
 
         if plan_has_warehouse and not accessible:
-            if not plan_unlocks["has_unlock"]:
+            if plan_failure:
+                issues.append(
+                    _issue(
+                        "warn",
+                        "system.warehouse.access_failed",
+                        "计划中包含仓库访问失败描写，仓库仍不可用。",
+                        evidence_old=entry_old.get("evidence") if entry_old else None,
+                    )
+                )
+            elif not plan_unlocks["has_unlock"]:
                 issues.append(
                     _issue(
                         "error",
                         "system.warehouse.strict_access",
                         "计划中包含仓库访问，但当前仓库不可用且未包含解锁事件。",
+                        evidence_old=entry_old.get("evidence") if entry_old else None,
                         suggestions=[
                             {
                                 "type": "add_unlock_event",
@@ -476,6 +493,7 @@ class StoryStateManager:
                         "error",
                         "system.warehouse.unlock_without_cause",
                         "计划声明解锁仓库，但缺少明确触发原因。",
+                        evidence_old=entry_old.get("evidence") if entry_old else None,
                         suggestions=[
                             {
                                 "type": "add_unlock_cause",
@@ -517,6 +535,12 @@ class StoryStateManager:
                 return {"has_unlock": True, "has_cause": bool(cause and str(cause).strip())}
         return {"has_unlock": False, "has_cause": False}
 
+    def _plan_has_warehouse_failure(self, plan: Dict[str, Any]) -> bool:
+        if not isinstance(plan, dict):
+            return False
+        serialized = json.dumps(plan, ensure_ascii=False)
+        return any(k in serialized for k in WAREHOUSE_FAILURE)
+
     def validate_chapter(self, chapter_text: str, snapshot: Dict[str, Any]) -> List[Dict[str, Any]]:
         issues: List[Issue] = []
         state = snapshot.get("state", {})
@@ -525,6 +549,7 @@ class StoryStateManager:
             .get("warehouse", {})
             .get("accessible", False)
         )
+        entry_old = self._get_entry_from_snapshot(snapshot, "system.warehouse.accessible")
 
         signals = _detect_warehouse_signals(chapter_text)
         if signals.get("trigger"):
@@ -536,6 +561,7 @@ class StoryStateManager:
                             "system.warehouse.unlocked_in_chapter",
                             "本章出现仓库成功访问，但仓库原本不可用；已检测到解锁桥段，请确保状态更新。",
                             evidence_new=signals.get("evidence"),
+                            evidence_old=entry_old.get("evidence") if entry_old else None,
                         )
                     )
                 else:
@@ -545,6 +571,7 @@ class StoryStateManager:
                             "system.warehouse.strict_access",
                             "仓库不可用，但正文出现成功访问/取物等行为。",
                             evidence_new=signals.get("evidence"),
+                            evidence_old=entry_old.get("evidence") if entry_old else None,
                             suggestions=[
                                 {
                                     "type": "rewrite_to_fail_access",
@@ -564,6 +591,7 @@ class StoryStateManager:
                         "system.warehouse.access_failed",
                         "仓库不可用且正文出现访问失败描写，保持一致。",
                         evidence_new=signals.get("evidence"),
+                        evidence_old=entry_old.get("evidence") if entry_old else None,
                     )
                 )
 
@@ -590,6 +618,12 @@ class StoryStateManager:
 
         # 可选 LLM 抽取（暂未启用）
         return updates
+
+    def _get_entry_from_snapshot(self, snapshot: Dict[str, Any], path: str) -> Optional[Dict[str, Any]]:
+        for entry in snapshot.get("entries", []):
+            if entry.get("path") == path:
+                return entry
+        return None
 
     def commit(
         self,

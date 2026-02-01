@@ -1,0 +1,44 @@
+{
+  "chapter": 19,
+  "hash": "4d9e1055ba7c",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "known_locations",
+        "value": [
+          "诺斯堡",
+          "河谷村"
+        ],
+        "hard": false,
+        "reason": "本章亲自视察了河谷村，对该地点建立了具体认知"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "known_characters",
+        "value": [
+          "奥托（河谷村村长）"
+        ],
+        "hard": false,
+        "reason": "本章与河谷村村长奥托进行了首次接触与对话"
+      },
+      {
+        "subject": "world",
+        "predicate": "河谷村_status",
+        "value": "极度贫困，防御薄弱，民心麻木疏离，对新领主极度不信任，长期受魔兽袭扰",
+        "hard": false,
+        "reason": "通过主角实地视察，具体揭示了河谷村的真实状况与核心问题（信任崩溃）"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "current_understanding",
+        "value": "认识到领地核心问题在于领主与领民间信任体系彻底崩溃，常规施恩手段无效，必须通过可见、切实且让领民参与的改变来重建信任",
+        "hard": false,
+        "reason": "视察河谷村后，通过观察村民反应（尤其是拒绝救治伤者事件）得出的核心结论与决策方向"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

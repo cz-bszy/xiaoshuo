@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 17 established: 浓重的血腥味混杂着尘土的气息，钻进艾伦的鼻腔，粘稠得仿佛能用手抓住 / 他强忍着喉咙里翻涌的酸水，目光扫过眼前的景象",
+      "evidence": {
+        "quote": "浓重的血腥味混杂着尘土的气息，钻进艾伦的鼻腔，粘稠得仿佛能用手抓住 / 他强忍着喉咙里翻涌的酸水，目光扫过眼前的景象",
+        "chapter_pos": "chapter_017"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 17",
+      "evidence": {
+        "quote": "浓重的血腥味混杂着尘土的气息，钻进艾伦的鼻腔，粘稠得仿佛能用手抓住 / 他强忍着喉咙里翻涌的酸水，目光扫过眼前的景象",
+        "chapter_pos": "chapter_017"
+      }
+    }
+  ]
+}

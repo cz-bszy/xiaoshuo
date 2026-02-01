@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 4 established: 深夜的诺斯本家宅邸，静得能听见自己的心跳 / 艾伦·诺斯躺在硬木板床上，睁着眼睛望着天花板上模糊的阴影",
+      "evidence": {
+        "quote": "深夜的诺斯本家宅邸，静得能听见自己的心跳 / 艾伦·诺斯躺在硬木板床上，睁着眼睛望着天花板上模糊的阴影",
+        "chapter_pos": "chapter_004"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 4",
+      "evidence": {
+        "quote": "深夜的诺斯本家宅邸，静得能听见自己的心跳 / 艾伦·诺斯躺在硬木板床上，睁着眼睛望着天花板上模糊的阴影",
+        "chapter_pos": "chapter_004"
+      }
+    }
+  ]
+}

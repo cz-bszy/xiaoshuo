@@ -1,0 +1,4 @@
+$298a1e57-6ebe-4eae-bd8a-7edd4c48c82d²ô!entry_id ÿÿÿÿÿÿÿÿÿ*string08/lossless_restatement ÿÿÿÿÿÿÿÿÿ*string08!keywords ÿÿÿÿÿÿÿÿÿ*list08item *string08$	timestamp ÿÿÿÿÿÿÿÿÿ*string08#location ÿÿÿÿÿÿÿÿÿ*string08 persons ÿÿÿÿÿÿÿÿÿ*list08item *string08!entities ÿÿÿÿÿÿÿÿÿ*list08item	 *string08 topic
+ ÿÿÿÿÿÿÿÿÿ*string085vector ÿÿÿÿÿÿÿÿÿ*fixed_size_list:float:102408"'
+lance.auto_cleanup.older_than14days"!
+lance.auto_cleanup.interval20

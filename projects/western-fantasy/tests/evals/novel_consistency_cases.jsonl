@@ -1,0 +1,3 @@
+{"id":"warehouse_locked","history_facts":[{"subject":"system.warehouse","predicate":"accessible","value":false,"hard":true}],"chapter":2,"outline":"尝试打开系统仓库确认权限","draft":"他尝试打开系统仓库，界面却提示权限不足，无法打开。","expect":{"blocker_keys":[]}}
+{"id":"warehouse_violation","history_facts":[{"subject":"system.warehouse","predicate":"accessible","value":false,"hard":true}],"chapter":2,"outline":"仓库还是不可用","draft":"艾伦打开系统仓库，成功取出物品。","expect":{"blocker_keys":["system.warehouse.accessible"]}}
+{"id":"name_drift","history_facts":[],"chapter":1,"outline":"主角首次登场","draft":"林远站在废墟中，回想起前世。","expect":{"types":["name_drift"]}}

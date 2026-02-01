@@ -1,0 +1,39 @@
+{
+  "chapter": 9,
+  "hash": "352d0e7f06d4",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "decision_made",
+        "value": "前往诺斯领",
+        "hard": true,
+        "reason": "经过系统分析、信息验证与塞巴斯商讨后，做出的最终战略抉择。"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "star_dust",
+        "value": 550,
+        "hard": true,
+        "reason": "触发并接受里程碑任务‘接管你的领地’，任务奖励包含500星尘，加上原有50，总计550。（注：奖励暂未发放，此为预期状态，实际发放可能在抵达领地后）"
+      },
+      {
+        "subject": "world",
+        "predicate": "current_mission",
+        "value": "接管诺斯领（时限30日）",
+        "hard": true,
+        "reason": "星辰系统响应主角抉择所触发的主要任务。"
+      },
+      {
+        "subject": "world",
+        "predicate": "known_threat",
+        "value": "伯顿男爵对诺斯领的觊觎",
+        "hard": true,
+        "reason": "通过庭院交谈与塞巴斯情报补充得知。"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

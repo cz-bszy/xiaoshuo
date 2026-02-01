@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 18 established: 清晨的薄雾还缠绕在林间，艾伦便已经醒来了 / 身下的硬木板床和简陋帐篷无法提供真正的舒适，但比起前几日餐风露宿的旅程，至少头顶有了遮挡",
+      "evidence": {
+        "quote": "清晨的薄雾还缠绕在林间，艾伦便已经醒来了 / 身下的硬木板床和简陋帐篷无法提供真正的舒适，但比起前几日餐风露宿的旅程，至少头顶有了遮挡",
+        "chapter_pos": "chapter_018"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 18",
+      "evidence": {
+        "quote": "清晨的薄雾还缠绕在林间，艾伦便已经醒来了 / 身下的硬木板床和简陋帐篷无法提供真正的舒适，但比起前几日餐风露宿的旅程，至少头顶有了遮挡",
+        "chapter_pos": "chapter_018"
+      }
+    }
+  ]
+}

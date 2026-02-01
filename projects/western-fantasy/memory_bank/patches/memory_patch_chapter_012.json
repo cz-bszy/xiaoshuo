@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 12 established: 清晨的第一缕光线勉强穿透边境驿站厚重的污渍窗户，在粗糙的木地板上投下昏黄的光斑 / 艾伦·诺斯在硬板床上醒来，鼻腔里充斥着陈年麦酒、汗水和霉味混合的复杂气息",
+      "evidence": {
+        "quote": "清晨的第一缕光线勉强穿透边境驿站厚重的污渍窗户，在粗糙的木地板上投下昏黄的光斑 / 艾伦·诺斯在硬板床上醒来，鼻腔里充斥着陈年麦酒、汗水和霉味混合的复杂气息",
+        "chapter_pos": "chapter_012"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 12",
+      "evidence": {
+        "quote": "清晨的第一缕光线勉强穿透边境驿站厚重的污渍窗户，在粗糙的木地板上投下昏黄的光斑 / 艾伦·诺斯在硬板床上醒来，鼻腔里充斥着陈年麦酒、汗水和霉味混合的复杂气息",
+        "chapter_pos": "chapter_012"
+      }
+    }
+  ]
+}

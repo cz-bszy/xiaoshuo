@@ -1,0 +1,15 @@
+HARD_RULE:
+  - key: system.warehouse.accessible
+    value: false
+    description: "系统仓库默认不可打开，除非明确解锁事件"
+    violation_keywords: ["系统仓库", "仓库界面", "库存", "物品栏"]
+
+SOFT_FACT:
+  - key: protagonist.canonical_name
+    value: "艾伦·诺斯"
+  - key: protagonist.aliases
+    value: ["艾伦", "林远"]
+
+STATEFUL:
+  - key: system.warehouse.accessible
+    description: "仓库权限状态，可通过剧情解锁"

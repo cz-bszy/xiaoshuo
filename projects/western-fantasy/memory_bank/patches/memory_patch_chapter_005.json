@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 5 established: 清晨的微光透过木窗的缝隙，在粗糙的地板上切出几道苍白 / 艾伦·诺斯睁开眼，没有立刻起身",
+      "evidence": {
+        "quote": "清晨的微光透过木窗的缝隙，在粗糙的地板上切出几道苍白 / 艾伦·诺斯睁开眼，没有立刻起身",
+        "chapter_pos": "chapter_005"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 5",
+      "evidence": {
+        "quote": "清晨的微光透过木窗的缝隙，在粗糙的地板上切出几道苍白 / 艾伦·诺斯睁开眼，没有立刻起身",
+        "chapter_pos": "chapter_005"
+      }
+    }
+  ]
+}

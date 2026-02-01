@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 7 established: 傍晚的最后一缕余晖被诺斯本家城堡高耸的石墙吞没，庭院陷入一片青灰色的朦胧 / 艾伦没有回自己那个位于塔楼侧翼、简陋得如同佣人房的卧室，而是径直走向主堡二层东侧的书房",
+      "evidence": {
+        "quote": "傍晚的最后一缕余晖被诺斯本家城堡高耸的石墙吞没，庭院陷入一片青灰色的朦胧 / 艾伦没有回自己那个位于塔楼侧翼、简陋得如同佣人房的卧室，而是径直走向主堡二层东侧的书房",
+        "chapter_pos": "chapter_007"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 7",
+      "evidence": {
+        "quote": "傍晚的最后一缕余晖被诺斯本家城堡高耸的石墙吞没，庭院陷入一片青灰色的朦胧 / 艾伦没有回自己那个位于塔楼侧翼、简陋得如同佣人房的卧室，而是径直走向主堡二层东侧的书房",
+        "chapter_pos": "chapter_007"
+      }
+    }
+  ]
+}

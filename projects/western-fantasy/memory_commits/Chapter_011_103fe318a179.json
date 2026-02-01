@@ -1,0 +1,39 @@
+{
+  "chapter": 11,
+  "hash": "103fe318a179",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "star_dust",
+        "value": 500,
+        "hard": true,
+        "reason": "支付租用马车及少量补给品费用"
+      },
+      {
+        "subject": "world",
+        "predicate": "known_location",
+        "value": "废弃的临时营地（位于通往诺斯领的道路旁，有近期魔兽袭击痕迹）",
+        "hard": false,
+        "reason": "旅途中的发现"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "training_progress",
+        "value": "初次尝试源素感知，感受到内外源素的微弱存在与共鸣，但无法引导",
+        "hard": false,
+        "reason": "在马车行进途中首次修炼《源素基础感知法》"
+      },
+      {
+        "subject": "relationship",
+        "predicate": "艾伦·诺斯与塞巴斯",
+        "value": "初步信任的伙伴",
+        "hard": false,
+        "reason": "通过旅途交谈、分享地图、关心修炼等互动，关系从陌生主仆向初步信任转变"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

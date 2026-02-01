@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 1 established: 头痛 / 不是那种熬夜后的闷痛，而是仿佛有根烧红的铁钎从太阳穴贯穿到后脑勺的锐痛，伴随着阵阵眩晕",
+      "evidence": {
+        "quote": "头痛 / 不是那种熬夜后的闷痛，而是仿佛有根烧红的铁钎从太阳穴贯穿到后脑勺的锐痛，伴随着阵阵眩晕",
+        "chapter_pos": "chapter_001"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 1",
+      "evidence": {
+        "quote": "头痛 / 不是那种熬夜后的闷痛，而是仿佛有根烧红的铁钎从太阳穴贯穿到后脑勺的锐痛，伴随着阵阵眩晕",
+        "chapter_pos": "chapter_001"
+      }
+    }
+  ]
+}

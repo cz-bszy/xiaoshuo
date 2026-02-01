@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 16 established: 烈日炙烤着龟裂的泥土，废弃的商道在起伏的荒原上延伸，像一道被遗忘的伤疤 / 艾伦·诺斯眯起眼睛，用手背擦去额头上不断渗出的汗水，皮革水囊已经轻了一半",
+      "evidence": {
+        "quote": "烈日炙烤着龟裂的泥土，废弃的商道在起伏的荒原上延伸，像一道被遗忘的伤疤 / 艾伦·诺斯眯起眼睛，用手背擦去额头上不断渗出的汗水，皮革水囊已经轻了一半",
+        "chapter_pos": "chapter_016"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 16",
+      "evidence": {
+        "quote": "烈日炙烤着龟裂的泥土，废弃的商道在起伏的荒原上延伸，像一道被遗忘的伤疤 / 艾伦·诺斯眯起眼睛，用手背擦去额头上不断渗出的汗水，皮革水囊已经轻了一半",
+        "chapter_pos": "chapter_016"
+      }
+    }
+  ]
+}

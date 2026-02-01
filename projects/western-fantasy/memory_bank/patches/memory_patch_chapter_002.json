@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "op": "append",
+      "file": "Core/progress.md",
+      "content": "- Chapter 2 established: 艾伦·诺斯——或者说，林远——在一种混合着霉味和陌生感的空气中醒来 / 身下是坚硬的木板床，粗麻床单摩擦着皮肤",
+      "evidence": {
+        "quote": "艾伦·诺斯——或者说，林远——在一种混合着霉味和陌生感的空气中醒来 / 身下是坚硬的木板床，粗麻床单摩擦着皮肤",
+        "chapter_pos": "chapter_002"
+      }
+    },
+    {
+      "op": "append",
+      "file": "Core/activeContext.md",
+      "content": "- Current: Chapter 2",
+      "evidence": {
+        "quote": "艾伦·诺斯——或者说，林远——在一种混合着霉味和陌生感的空气中醒来 / 身下是坚硬的木板床，粗麻床单摩擦着皮肤",
+        "chapter_pos": "chapter_002"
+      }
+    }
+  ]
+}

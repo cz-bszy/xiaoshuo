@@ -1,0 +1,28 @@
+providers:
+  deepseek:
+    base_url: "https://api.deepseek.com"
+    api_key_path: "../deepseek_api.txt"
+    models:
+      writer: "deepseek-reasoner"
+      critic: "deepseek-reasoner"
+    temperature: 0.7
+    max_tokens: 65536
+    thinking_mode: true
+
+  kimi:
+    base_url: "https://api.moonshot.cn/v1"
+    api_key_path: "../kimi2.5_thinking_api.txt"
+    models:
+      critic: "kimi-k2.5"
+    temperature: 1.0
+    max_tokens: 8192
+    thinking_mode: true
+
+  glm:
+    base_url: "https://api.z.ai/api/paas/v4"
+    api_key_path: "../GLM-4.7_api.txt"
+    models:
+      critic: "glm-4.7"
+    temperature: 0.2
+    max_tokens: 131072
+    thinking_mode: true

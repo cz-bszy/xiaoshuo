@@ -1,0 +1,15 @@
+{
+  "chapter": 12,
+  "hash": "bf014a57aa91",
+  "replaced": null,
+  "state_diff": {
+    "艾伦·诺斯": {
+      "system.aware": true,
+      "decision_made": "抵达诺斯领后立即使用星尘抽取奖励",
+      "possess_item": "简易砂石净水装置图纸（绿色品质）",
+      "star_dust": 500,
+      "triggered_mission": "重建家园"
+    }
+  },
+  "active": true
+}

@@ -1,0 +1,37 @@
+{
+  "chapter": 18,
+  "hash": "89b9e027db93",
+  "replaced": null,
+  "state_diff": {
+    "facts": [
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "possess_item",
+        "value": [
+          "简易砂石净水装置图纸（绿色品质）",
+          "绿色抽奖券×1",
+          "暗红色未知晶体碎片",
+          "残破的未知地图半张"
+        ],
+        "hard": true,
+        "reason": "勘察诺斯堡过程中，于城墙裂缝中发现能量结晶碎片，在书房发现残图。"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "star_dust",
+        "value": 700,
+        "hard": true,
+        "reason": "完成【勘察领地·阶段一】30%，获得奖励50星尘。"
+      },
+      {
+        "subject": "艾伦·诺斯",
+        "predicate": "current_mission_progress",
+        "value": "已完成诺斯堡初步勘察，解锁【重建诺斯堡】里程碑任务第一阶段（建立临时营地，修复一处城墙缺口）。下一步计划：详细勘察领地其他区域，寻找残留领民。",
+        "hard": false,
+        "reason": "章节结束时主角的决策与计划。"
+      }
+    ],
+    "rename_events": []
+  },
+  "active": true
+}

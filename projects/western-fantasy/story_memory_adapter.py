@@ -3,6 +3,7 @@
 负责：章节记忆提取、语义检索、记忆管理
 """
 
+import json
 import sys
 from pathlib import Path
 from typing import List, Optional, Dict, Any
@@ -16,6 +17,8 @@ sys.path.insert(0, str(SIMPLEMEM_PATH))
 
 from main import SimpleMemSystem
 from models.memory_entry import MemoryEntry
+from memory_bank_manager import MemoryBankManager
+from temporal_fact_store import TemporalFactStore
 
 # 项目路径
 CHAPTERS_PATH = PROJECT_PATH / "chapters" / "v01"
@@ -51,6 +54,9 @@ class StoryMemoryAdapter:
             enable_parallel_processing=True,
             max_parallel_workers=4
         )
+
+        self.fact_store = TemporalFactStore(PROJECT_PATH / "data" / "facts.db")
+        self.memory_bank = MemoryBankManager(PROJECT_PATH)
         
         # 章节记忆统计
         self.chapter_stats: Dict[int, int] = {}  # 章节号 -> 记忆条目数
@@ -112,9 +118,16 @@ class StoryMemoryAdapter:
             格式化的上下文字符串
         """
         print(f"\n🔍 查询: {question}")
-        
+
         # 使用 SimpleMem 检索
         try:
+            try:
+                if self.memory_system.vector_store.table.count_rows() == 0:
+                    print("  📝 记忆库为空")
+                    return "未找到相关记忆"
+            except Exception:
+                pass
+
             # 获取检索结果
             contexts = self.memory_system.hybrid_retriever.retrieve(question)
             
@@ -182,24 +195,41 @@ class StoryMemoryAdapter:
             综合的写作上下文
         """
         context_parts = []
-        
-        # 基础查询：前文概要
-        context_parts.append("## 前文关键记忆\n")
-        context_parts.append(self.query_context(
-            f"第{chapter_num-1}章到第{chapter_num}章之前发生的重要事件"
-        ))
-        
-        # 主角状态
-        context_parts.append("\n## 主角当前状态\n")
-        context_parts.append(self.query_context("艾伦当前的境界、位置和状态"))
-        
-        # 如果有特定主题
-        if topics:
-            context_parts.append("\n## 相关背景\n")
-            for topic in topics:
-                context_parts.append(f"### {topic}\n")
-                context_parts.append(self.query_context(topic))
-        
+
+        # 段 1：HardState Snapshot
+        snapshot = self.fact_store.get_snapshot(chapter_num - 1)
+        hard_state = json.dumps(snapshot, ensure_ascii=False, indent=2)
+        context_parts.append("## HardState Snapshot\n")
+        context_parts.append(hard_state if hard_state.strip() else "（无）")
+
+        # 段 2：MemoryBank 精选
+        core = self.memory_bank.read_core()
+        memory_bank_excerpt = "\n".join(
+            [
+                core.get("world_and_characters.md", ""),
+                core.get("activeContext.md", ""),
+            ]
+        ).strip()
+        memory_bank_excerpt = memory_bank_excerpt[:2000] if memory_bank_excerpt else "（无）"
+        context_parts.append("\n## MemoryBank Excerpt\n")
+        context_parts.append(memory_bank_excerpt)
+
+        # 段 3：SimpleMem episodic recall
+        recall_query = f"第{chapter_num-1}章到第{chapter_num}章之前发生的重要事件"
+        recall = self.query_context(recall_query)
+        context_parts.append("\n## SimpleMem Recall\n")
+        context_parts.append(recall if recall.strip() else "（无）")
+
+        # 段 4：本章写作目标/大纲
+        outline_path = PROJECT_PATH / "outline" / "L3-chapters" / f"v01-c{chapter_num:03d}.md"
+        if outline_path.exists():
+            outline_text = outline_path.read_text(encoding="utf-8")
+        else:
+            outline_text = core.get("activeContext.md", "")
+        outline_text = outline_text.strip() if outline_text else "（无）"
+        context_parts.append("\n## Outline\n")
+        context_parts.append(outline_text)
+
         return "\n".join(context_parts)
     
     def import_all_chapters(self, chapter_range: tuple = (1, 60)) -> Dict[str, Any]:
